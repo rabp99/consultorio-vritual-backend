@@ -21,9 +21,8 @@ class DiseasesController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
         $description = $this->getRequest()->getQuery('description');
-        $state = $this->getRequest()->getQuery('state');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -33,17 +32,12 @@ class DiseasesController extends AppController
             $query->order([$sortColumn => $sortOrder]);
         }
         
-        // filters    
-        if ($id) {
-           $query->where(['Diseases.id' => $id]);
-        }
-    
         if ($description) {
-           $query->where(['Diseases.description' => $description]);
+           $query->where(['Diseases.description LIKE' => "%$description%"]);
         }
     
         if ($state) {
-           $query->where(['Diseases.state' => $state]);
+           $query->where(['Diseases.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -73,9 +67,7 @@ class DiseasesController extends AppController
      */   
     public function view($id = null) {
         $this->getRequest()->allowMethod("GET");
-        $disease = $this->Diseases->get($id, [
-            'contain' => ['Diagnostics'],
-        ]);
+        $disease = $this->Diseases->get($id);
 
         $this->set(compact('disease'));
         $this->viewBuilder()->setOption('serialize', true);
@@ -92,10 +84,10 @@ class DiseasesController extends AppController
         $errors = null;
         
         if ($this->Diseases->save($disease)) {
-            $message = __('El disease fue registrado correctamente');
+            $message = __('La enfermedad fue registrada correctamente');
         }
         else {
-            $message = __('El disease no fue registrado correctamente');
+            $message = __('La enfermedad no fue registrada correctamente');
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -119,9 +111,9 @@ class DiseasesController extends AppController
         $errors = null;
         
         if ($this->Diseases->save($disease)) {
-            $message = __('El disease fue modificado correctamente');
+            $message = __('La enfermedad fue modificada correctamente');
         } else {
-            $message = __('El disease no fue modificado correctamente');
+            $message = __('La enfermedad no fue modificada correctamente');
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -145,9 +137,9 @@ class DiseasesController extends AppController
         $errors = null;
         
         if ($this->Diseases->save($disease)) {
-            $message = __('El disease fue habilitado correctamente');
+            $message = __('La enfermedad fue habilitada correctamente');
         } else {
-            $message = __('El disease no fue habilitado correctamente');
+            $message = __('La enfermedad no fue habilitada correctamente');
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -170,9 +162,9 @@ class DiseasesController extends AppController
         $errors = null;
         
         if ($this->Diseases->save($disease)) {
-            $message = __('El disease fue deshabilitado correctamente');
+            $message = __('La enfermedad fue deshabilitada correctamente');
         } else {
-            $message = __('El disease no fue deshabilitado correctamente');
+            $message = __('La enfermedad no fue deshabilitada correctamente');
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }

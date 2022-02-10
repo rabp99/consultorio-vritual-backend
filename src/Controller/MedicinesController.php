@@ -21,10 +21,9 @@ class MedicinesController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
         $description = $this->getRequest()->getQuery('description');
         $presentation = $this->getRequest()->getQuery('presentation');
-        $state = $this->getRequest()->getQuery('state');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -33,22 +32,17 @@ class MedicinesController extends AppController
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters    
-        if ($id) {
-           $query->where(['Medicines.id' => $id]);
-        }
-    
+            
         if ($description) {
-           $query->where(['Medicines.description' => $description]);
+           $query->where(['Medicines.description LIKE' => "%$description%"]);
         }
     
         if ($presentation) {
-           $query->where(['Medicines.presentation' => $presentation]);
+           $query->where(['Medicines.presentation LIKE' => "%$presentation"]);
         }
     
         if ($state) {
-           $query->where(['Medicines.state' => $state]);
+           $query->where(['Medicines.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -78,9 +72,7 @@ class MedicinesController extends AppController
      */   
     public function view($id = null) {
         $this->getRequest()->allowMethod("GET");
-        $medicine = $this->Medicines->get($id, [
-            'contain' => ['RecipeDetails'],
-        ]);
+        $medicine = $this->Medicines->get($id);
 
         $this->set(compact('medicine'));
         $this->viewBuilder()->setOption('serialize', true);
@@ -97,10 +89,10 @@ class MedicinesController extends AppController
         $errors = null;
         
         if ($this->Medicines->save($medicine)) {
-            $message = __('El medicine fue registrado correctamente');
+            $message = __('El medicamento fue registrado correctamente');
         }
         else {
-            $message = __('El medicine no fue registrado correctamente');
+            $message = __('El medicamento no fue registrado correctamente');
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -124,9 +116,9 @@ class MedicinesController extends AppController
         $errors = null;
         
         if ($this->Medicines->save($medicine)) {
-            $message = __('El medicine fue modificado correctamente');
+            $message = __('El medicamento fue modificado correctamente');
         } else {
-            $message = __('El medicine no fue modificado correctamente');
+            $message = __('El medicamento no fue modificado correctamente');
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -150,9 +142,9 @@ class MedicinesController extends AppController
         $errors = null;
         
         if ($this->Medicines->save($medicine)) {
-            $message = __('El medicine fue habilitado correctamente');
+            $message = __('El medicamento fue habilitado correctamente');
         } else {
-            $message = __('El medicine no fue habilitado correctamente');
+            $message = __('El medicamento no fue habilitado correctamente');
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -175,9 +167,9 @@ class MedicinesController extends AppController
         $errors = null;
         
         if ($this->Medicines->save($medicine)) {
-            $message = __('El medicine fue deshabilitado correctamente');
+            $message = __('El medicamento fue deshabilitado correctamente');
         } else {
-            $message = __('El medicine no fue deshabilitado correctamente');
+            $message = __('El medicamento no fue deshabilitado correctamente');
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }

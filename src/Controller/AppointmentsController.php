@@ -21,15 +21,8 @@ class AppointmentsController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
-        $patientPersonDocType = $this->getRequest()->getQuery('patient_person_doc_type');
-        $patientPersonDocNum = $this->getRequest()->getQuery('patient_person_doc_num');
-        $employeePersonDocType = $this->getRequest()->getQuery('employee_person_doc_type');
-        $employeePersonDocNum = $this->getRequest()->getQuery('employee_person_doc_num');
-        $consultingRoomId = $this->getRequest()->getQuery('consulting_room_id');
         $appointmentDate = $this->getRequest()->getQuery('appointment_date');
-        $cost = $this->getRequest()->getQuery('cost');
-        $state = $this->getRequest()->getQuery('state');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -40,40 +33,12 @@ class AppointmentsController extends AppController
         }
         
         // filters    
-        if ($id) {
-           $query->where(['Appointments.id' => $id]);
-        }
-    
-        if ($patientPersonDocType) {
-           $query->where(['Appointments.patient_person_doc_type' => $patientPersonDocType]);
-        }
-    
-        if ($patientPersonDocNum) {
-           $query->where(['Appointments.patient_person_doc_num' => $patientPersonDocNum]);
-        }
-    
-        if ($employeePersonDocType) {
-           $query->where(['Appointments.employee_person_doc_type' => $employeePersonDocType]);
-        }
-    
-        if ($employeePersonDocNum) {
-           $query->where(['Appointments.employee_person_doc_num' => $employeePersonDocNum]);
-        }
-    
-        if ($consultingRoomId) {
-           $query->where(['Appointments.consulting_room_id' => $consultingRoomId]);
-        }
-    
         if ($appointmentDate) {
            $query->where(['Appointments.appointment_date' => $appointmentDate]);
         }
     
-        if ($cost) {
-           $query->where(['Appointments.cost' => $cost]);
-        }
-    
         if ($state) {
-           $query->where(['Appointments.state' => $state]);
+           $query->where(['Appointments.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -82,7 +47,11 @@ class AppointmentsController extends AppController
         }
         
         $this->paginate = [
-            'contain' => ['ConsultingRooms'],
+            'contain' => [
+                'ConsultingRooms', 
+                'Employees' => 'People',
+                'Patients' => 'People'
+            ],
         ];
         $appointments = $this->paginate($query, [
             'limit' => $itemsPerPage

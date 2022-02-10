@@ -21,34 +21,42 @@ class PatientsController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
-        $personDocType = $this->getRequest()->getQuery('person_doc_type');
+        $personDocType = explode(',', $this->getRequest()->getQuery('person_doc_type'));
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
-        $state = $this->getRequest()->getQuery('state');
+        $personFullName = $this->getRequest()->getQuery('person_full_name');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
-        $query = $this->Patients->find();
+        $query = $this->Patients->find()
+            ->contain('People');
         
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
         
-        // filters    
-        if ($id) {
-           $query->where(['Patients.id' => $id]);
-        }
-    
+        // filters        
         if ($personDocType) {
-           $query->where(['Patients.person_doc_type' => $personDocType]);
+           $query->where(['Patients.person_doc_type IN' => $personDocType]);
         }
     
         if ($personDocNum) {
-           $query->where(['Patients.person_doc_num' => $personDocNum]);
+           $query->where(['Patients.person_doc_num LIKE' => "%$personDocNum%"]);
+        }
+    
+        if ($personFullName) {
+           $query->where(["OR" => [
+                ['People.names LIKE' => "%$personFullName%"],
+                ['People.last_name1 LIKE' => "%$personFullName%"],
+                ['People.last_name2 LIKE' => "%$personFullName%"],
+                ["CONCAT(People.last_name1, ' ', People.last_name2) LIKE" => "%$personFullName%"],
+                ["CONCAT(People.last_name1, ' ', People.last_name2, ', ', People.names) LIKE" => "%$personFullName%"],
+                ["CONCAT(People.names, ' ', People.last_name1, ', ', People.last_name2) LIKE" => "%$personFullName%"],
+            ]]);
         }
     
         if ($state) {
-           $query->where(['Patients.state' => $state]);
+           $query->where(['Patients.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -155,9 +163,9 @@ class PatientsController extends AppController
         $errors = null;
         
         if ($this->Patients->save($patient)) {
-            $message = __('El patient fue habilitado correctamente');
+            $message = __('El paciente fue habilitado correctamente');
         } else {
-            $message = __('El patient no fue habilitado correctamente');
+            $message = __('El paciente no fue habilitado correctamente');
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -181,9 +189,9 @@ class PatientsController extends AppController
         $errors = null;
         
         if ($this->Patients->save($patient)) {
-            $message = __('El patient fue deshabilitado correctamente');
+            $message = __('El paciente fue deshabilitado correctamente');
         } else {
-            $message = __('El patient no fue deshabilitado correctamente');
+            $message = __('El paciente no fue deshabilitado correctamente');
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }

@@ -21,12 +21,8 @@ class PlacesController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
         $description = $this->getRequest()->getQuery('description');
-        $address = $this->getRequest()->getQuery('address');
-        $latitude = $this->getRequest()->getQuery('latitude');
-        $longitude = $this->getRequest()->getQuery('longitude');
-        $state = $this->getRequest()->getQuery('state');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -36,29 +32,12 @@ class PlacesController extends AppController
             $query->order([$sortColumn => $sortOrder]);
         }
         
-        // filters    
-        if ($id) {
-           $query->where(['Places.id' => $id]);
-        }
-    
         if ($description) {
-           $query->where(['Places.description' => $description]);
-        }
-    
-        if ($address) {
-           $query->where(['Places.address' => $address]);
-        }
-    
-        if ($latitude) {
-           $query->where(['Places.latitude' => $latitude]);
-        }
-    
-        if ($longitude) {
-           $query->where(['Places.longitude' => $longitude]);
+           $query->where(['Places.description LIKE' => "%$description%"]);
         }
     
         if ($state) {
-           $query->where(['Places.state' => $state]);
+           $query->where(['Places.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -107,10 +86,10 @@ class PlacesController extends AppController
         $errors = null;
         
         if ($this->Places->save($place)) {
-            $message = __('El place fue registrado correctamente');
+            $message = __('El establecimiento fue registrado correctamente');
         }
         else {
-            $message = __('El place no fue registrado correctamente');
+            $message = __('El establecimiento no fue registrado correctamente');
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -134,9 +113,9 @@ class PlacesController extends AppController
         $errors = null;
         
         if ($this->Places->save($place)) {
-            $message = __('El place fue modificado correctamente');
+            $message = __('El establecimiento fue modificado correctamente');
         } else {
-            $message = __('El place no fue modificado correctamente');
+            $message = __('El establecimiento no fue modificado correctamente');
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -160,9 +139,9 @@ class PlacesController extends AppController
         $errors = null;
         
         if ($this->Places->save($place)) {
-            $message = __('El place fue habilitado correctamente');
+            $message = __('El establecimiento fue habilitado correctamente');
         } else {
-            $message = __('El place no fue habilitado correctamente');
+            $message = __('El establecimiento no fue habilitado correctamente');
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -185,13 +164,27 @@ class PlacesController extends AppController
         $errors = null;
         
         if ($this->Places->save($place)) {
-            $message = __('El place fue deshabilitado correctamente');
+            $message = __('El establecimiento fue deshabilitado correctamente');
         } else {
-            $message = __('El place no fue deshabilitado correctamente');
+            $message = __('El establecimiento no fue deshabilitado correctamente');
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
         $this->set(compact('place', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
+    
+    /**
+     * Get List method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */   
+    public function getList() {
+        $this->getRequest()->allowMethod("GET");
+        $places = $this->Places->find()->where(["Places.state" => "Activo"]);
+
+        $this->set(compact('places'));
+        $this->viewBuilder()->setOption('serialize', true);
+    }
+
 }

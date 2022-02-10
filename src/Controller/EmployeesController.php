@@ -21,34 +21,56 @@ class EmployeesController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $personDocType = $this->getRequest()->getQuery('person_doc_type');
+        $personDocType = $this->getRequest()->getQuery('person_doc_type') ?
+            explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
+        $personFullName = $this->getRequest()->getQuery('person_full_name');
         $cmp = $this->getRequest()->getQuery('cmp');
-        $state = $this->getRequest()->getQuery('state');
+        $state = $this->getRequest()->getQuery('state') ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
-        $query = $this->Employees->find();
+        $query = $this->Employees->find()
+            ->contain(['People']);
         
         if ($sortColumn && $sortOrder) {
-            $query->order([$sortColumn => $sortOrder]);
+            if ($sortColumn === "Employees.person_doc_num") {
+                $query->order([
+                    "Employees.person_doc_type" => $sortOrder,
+                    "Employees.person_doc_num" => $sortOrder,
+                ]);
+            } else {
+                $query->order([$sortColumn => $sortOrder]);
+            }
         }
         
         // filters    
         if ($personDocType) {
-           $query->where(['Employees.person_doc_type' => $personDocType]);
+           $query->where(['Employees.person_doc_type IN' => $personDocType]);
         }
     
         if ($personDocNum) {
-           $query->where(['Employees.person_doc_num' => $personDocNum]);
+           $query->where(['Employees.person_doc_num LIKE' => "%$personDocNum%"]);
+        }
+    
+        if ($personFullName) {
+           $query->where(["OR" => [
+                ['People.names LIKE' => "%$personFullName%"],
+                ['People.last_name1 LIKE' => "%$personFullName%"],
+                ['People.last_name2 LIKE' => "%$personFullName%"],
+                ["CONCAT(People.last_name1, ' ', People.last_name2) LIKE" => "%$personFullName%"],
+                ["CONCAT(People.last_name1, ' ', People.last_name2, ', ', People.names) LIKE" => "%$personFullName%"],
+                ["CONCAT(People.names, ' ', People.last_name1, ', ', People.last_name2) LIKE" => "%$personFullName%"],
+            ]]);
         }
     
         if ($cmp) {
-           $query->where(['Employees.cmp' => $cmp]);
+           $query->where(['Employees.cmp LIKE' => "%$cmp%"]);
         }
     
         if ($state) {
-           $query->where(['Employees.state' => $state]);
+           $query->where(['Employees.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -98,17 +120,20 @@ class EmployeesController extends AppController
         $employee = $this->Employees->newEntity($this->getRequest()->getData());
         $errors = null;
         
-        if ($this->Employees->save($employee)) {
-            $message = __('El employee fue registrado correctamente');
-        }
-        else {
-            $message = __('El employee no fue registrado correctamente');
+        try {
+            $this->Employees->getConnection()->begin();
+            $this->Employees->saveOrFail($employee);
+            $message = __('El médico fue registrado correctamente');
+            $this->Employees->getConnection()->commit();
+        } catch (\PDOException $ex) {
+            $message = __('El médico no fue registrado correctamente');
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
+            $this->Employees->getConnection()->rollback();
+        } finally {
+            $this->set(compact('employee', 'message', 'errors'));
+            $this->viewBuilder()->setOption('serialize', true);
         }
-        
-        $this->set(compact('employee', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
     }
 
     /**
@@ -150,14 +175,14 @@ class EmployeesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
+        $start = $this->getRequest()->getData('start');
         $employee = $this->Employees->get([$personDocType, $personDocNum]);
-        $employee->state = 1;
         $errors = null;
         
-        if ($this->Employees->save($employee)) {
-            $message = __('El employee fue habilitado correctamente');
+        if ($this->Employees->enable($employee, $start)) {
+            $message = __('El médico fue habilitado correctamente');
         } else {
-            $message = __('El employee no fue habilitado correctamente');
+            $message = __('El médico no fue habilitado correctamente');
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -176,14 +201,14 @@ class EmployeesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
-        $employee = $this->Employees->get([$personDocType, $personDocNum]);
-        $employee->state = 2;
+        $end = $this->getRequest()->getData('end');
+        $employee = $this->Employees->get([$personDocType, $personDocNum], ['contain' => ['LastEmployeeRecord']]);
         $errors = null;
         
-        if ($this->Employees->save($employee)) {
-            $message = __('El employee fue deshabilitado correctamente');
+        if ($this->Employees->disable($employee, $end)) {
+            $message = __('El médico fue deshabilitado correctamente');
         } else {
-            $message = __('El employee no fue deshabilitado correctamente');
+            $message = __('El médico no fue deshabilitado correctamente');
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }

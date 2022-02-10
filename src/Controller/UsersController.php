@@ -223,8 +223,8 @@ class UsersController extends AppController
         
         if ($result->isValid()) {
             $privateKey = file_get_contents(CONFIG . DS . 'jwt.key');
-            $user_id = $result->getData()["id"];
-            $user = $this->Users->get($user_id);
+            $username = $result->getData()["username"];
+            $user = $this->Users->get($username);
             
             $payload = [
                 'iss' => 'consultorio_virtual',

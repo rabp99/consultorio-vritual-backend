@@ -28,8 +28,6 @@ class EmployeeRecord extends Entity
      * @var array
      */
     protected $_accessible = [
-        'employee_person_doc_type' => true,
-        'employee_person_doc_num' => true,
         'start' => true,
         'end' => true,
         'created' => true,

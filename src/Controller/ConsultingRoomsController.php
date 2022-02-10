@@ -21,11 +21,10 @@ class ConsultingRoomsController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $id = $this->getRequest()->getQuery('id');
         $description = $this->getRequest()->getQuery('description');
         $floor = $this->getRequest()->getQuery('floor');
         $placeId = $this->getRequest()->getQuery('place_id');
-        $state = $this->getRequest()->getQuery('state');
+        $state = explode(',', $this->getRequest()->getQuery('state'));
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -34,18 +33,13 @@ class ConsultingRoomsController extends AppController
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters    
-        if ($id) {
-           $query->where(['ConsultingRooms.id' => $id]);
-        }
-    
+            
         if ($description) {
-           $query->where(['ConsultingRooms.description' => $description]);
+           $query->where(['ConsultingRooms.description LIKE' => "%$description%"]);
         }
     
         if ($floor) {
-           $query->where(['ConsultingRooms.floor' => $floor]);
+           $query->where(['ConsultingRooms.floor LIKE' => "%$floor%"]);
         }
     
         if ($placeId) {
@@ -53,7 +47,7 @@ class ConsultingRoomsController extends AppController
         }
     
         if ($state) {
-           $query->where(['ConsultingRooms.state' => $state]);
+           $query->where(['ConsultingRooms.state IN' => $state]);
         }
 
         $count = $query->count();
@@ -86,9 +80,7 @@ class ConsultingRoomsController extends AppController
      */   
     public function view($id = null) {
         $this->getRequest()->allowMethod("GET");
-        $consultingRoom = $this->ConsultingRooms->get($id, [
-            'contain' => ['Places', 'Appointments'],
-        ]);
+        $consultingRoom = $this->ConsultingRooms->get($id);
 
         $this->set(compact('consultingRoom'));
         $this->viewBuilder()->setOption('serialize', true);
@@ -105,10 +97,10 @@ class ConsultingRoomsController extends AppController
         $errors = null;
         
         if ($this->ConsultingRooms->save($consultingRoom)) {
-            $message = __('El consulting room fue registrado correctamente');
+            $message = __('El consultorio fue registrado correctamente');
         }
         else {
-            $message = __('El consulting room no fue registrado correctamente');
+            $message = __('El consultorio no fue registrado correctamente');
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -132,9 +124,9 @@ class ConsultingRoomsController extends AppController
         $errors = null;
         
         if ($this->ConsultingRooms->save($consultingRoom)) {
-            $message = __('El consulting room fue modificado correctamente');
+            $message = __('El consultorio fue modificado correctamente');
         } else {
-            $message = __('El consulting room no fue modificado correctamente');
+            $message = __('El consultorio no fue modificado correctamente');
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -158,9 +150,9 @@ class ConsultingRoomsController extends AppController
         $errors = null;
         
         if ($this->ConsultingRooms->save($consultingRoom)) {
-            $message = __('El consulting room fue habilitado correctamente');
+            $message = __('El consultorio fue habilitado correctamente');
         } else {
-            $message = __('El consulting room no fue habilitado correctamente');
+            $message = __('El consultorio no fue habilitado correctamente');
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -183,9 +175,9 @@ class ConsultingRoomsController extends AppController
         $errors = null;
         
         if ($this->ConsultingRooms->save($consultingRoom)) {
-            $message = __('El consulting room fue deshabilitado correctamente');
+            $message = __('El consultorio fue deshabilitado correctamente');
         } else {
-            $message = __('El consulting room no fue deshabilitado correctamente');
+            $message = __('El consultorio no fue deshabilitado correctamente');
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }

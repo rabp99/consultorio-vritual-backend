@@ -70,4 +70,81 @@ $routes->scope('/api', function (RouteBuilder $builder) {
             ]
         ]
     ]);
+    $builder->resources('appointments');
+    $builder->resources('consulting-rooms', [
+        'map' => [
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+    $builder->resources('medicines', [
+        'map' => [
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+    $builder->resources('diseases', [
+        'map' => [
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+    $builder->resources('employees', [
+        'map' => [
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+    $builder->resources('patients', [
+        'map' => [
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+    $builder->resources('places', [
+        'map' => [
+            'get_list' => [
+                'action' => 'getList',
+                'method' => 'GET'
+            ],
+            'enable' => [
+                'action' => 'enable',
+                'method' => 'POST'
+            ],
+            'disable' => [
+                'action' => 'disable',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
 });

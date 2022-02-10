@@ -9,10 +9,10 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
 /**
  * User Entity
  *
- * @property int $id
  * @property string $username
  * @property string|null $email
  * @property string $password
+ * @property string $role
  * @property string $employee_person_doc_type
  * @property string $employee_person_doc_num
  * @property \Cake\I18n\FrozenTime $created
@@ -34,6 +34,7 @@ class User extends Entity
         'username' => true,
         'email' => true,
         'password' => true,
+        'role' => true,
         'employee_person_doc_type' => true,
         'employee_person_doc_num' => true,
         'created' => true,

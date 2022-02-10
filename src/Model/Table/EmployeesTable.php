@@ -10,6 +10,8 @@ use Cake\Validation\Validator;
 
 /**
  * Employees Model
+ * 
+ * @property \App\Model\Table\EmployeeRecordsTable $EmployeeRecords
  *
  * @method \App\Model\Entity\Employee newEmptyEntity()
  * @method \App\Model\Entity\Employee newEntity(array $data, array $options = [])
@@ -35,8 +37,7 @@ class EmployeesTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void
-    {
+    public function initialize(array $config): void {
         parent::initialize($config);
 
         $this->setTable('employees');
@@ -44,6 +45,18 @@ class EmployeesTable extends Table
         $this->setPrimaryKey(['person_doc_type', 'person_doc_num']);
 
         $this->addBehavior('Timestamp');
+        
+        $this->belongsTo('People', [
+            'foreignKey' => ['person_doc_type', 'person_doc_num'],
+            'joinType' => 'INNER',
+        ]);
+        $this->hasMany('EmployeeRecords', [
+            'foreignKey' => ['employee_person_doc_type', 'employee_person_doc_num'],
+        ]);
+        $this->hasOne('LastEmployeeRecord')
+            ->setForeignKey(['employee_person_doc_type', 'employee_person_doc_num'])
+            ->setClassName('EmployeeRecords')
+            ->setFinder("last");
     }
 
     /**
@@ -52,8 +65,7 @@ class EmployeesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator
-    {
+    public function validationDefault(Validator $validator): Validator {
         $validator
             ->scalar('person_doc_type')
             ->allowEmptyString('person_doc_type', null, 'create');
@@ -84,10 +96,33 @@ class EmployeesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
+    public function buildRules(RulesChecker $rules): RulesChecker {
         $rules->add($rules->isUnique(['cmp']), ['errorField' => 'cmp']);
 
         return $rules;
+    }
+
+    public function enable(\App\Model\Entity\Employee &$employee, \Cake\I18n\FrozenDate $start) {
+        $employee->state = 'ACTIVO';
+        $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
+        $lastEmployeeRecord->start = $start;
+        $employee->employee_records = [$lastEmployeeRecord];
+        if ($this->save($employee)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function disable(\App\Model\Entity\Employee &$employee, \Cake\I18n\FrozenDate $end) {
+        $employee->state = 'INACTIVO';
+        if ($this->save($employee)) {
+            $lastEmployeeRecord = $employee->last_employee_record;
+            $lastEmployeeRecord->end = $end;
+            if ($this->EmployeeRecords->save($lastEmployeeRecord)) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

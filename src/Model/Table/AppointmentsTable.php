@@ -53,6 +53,14 @@ class AppointmentsTable extends Table
             'foreignKey' => 'consulting_room_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Employees', [
+            'foreignKey' => ['employee_person_doc_type', 'employee_person_doc_num'],
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Patients', [
+            'foreignKey' => ['patient_person_doc_type', 'patient_person_doc_num'],
+            'joinType' => 'INNER',
+        ]);
         $this->hasMany('Diagnostics', [
             'foreignKey' => 'appointment_id',
         ]);

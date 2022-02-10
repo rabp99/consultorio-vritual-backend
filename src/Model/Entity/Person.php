@@ -32,6 +32,8 @@ class Person extends Entity
      * @var array
      */
     protected $_accessible = [
+        'doc_type' => true,
+        'doc_num' => true,
         'names' => true,
         'last_name1' => true,
         'last_name2' => true,
@@ -42,4 +44,10 @@ class Person extends Entity
         'gendre' => true,
         'tels' => true,
     ];
+    
+    protected $_virtual = ['full_name'];
+    
+    protected function _getFullName() {
+        return $this->last_name1 . ' ' . $this->last_name2 . ', ' . $this->names;
+    }
 }

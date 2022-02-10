@@ -35,12 +35,11 @@ class EmployeeRecordsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void
-    {
+    public function initialize(array $config): void {
         parent::initialize($config);
 
         $this->setTable('employee_records');
-        $this->setDisplayField('id');
+        $this->setDisplayField('start');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -52,23 +51,20 @@ class EmployeeRecordsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator
-    {
+    public function validationDefault(Validator $validator): Validator {
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
-
+        
         $validator
             ->scalar('employee_person_doc_type')
-            ->requirePresence('employee_person_doc_type', 'create')
-            ->notEmptyString('employee_person_doc_type');
+            ->allowEmptyString('employee_person_doc_type', null, 'create');
 
         $validator
             ->scalar('employee_person_doc_num')
             ->maxLength('employee_person_doc_num', 10)
-            ->requirePresence('employee_person_doc_num', 'create')
-            ->notEmptyString('employee_person_doc_num');
-
+            ->allowEmptyString('employee_person_doc_num', null, 'create');
+        
         $validator
             ->date('start')
             ->requirePresence('start', 'create')
@@ -79,5 +75,11 @@ class EmployeeRecordsTable extends Table
             ->allowEmptyDate('end');
 
         return $validator;
+    }
+    
+    public function findLast(Query $query, array $options) {
+        return $query
+            ->order(["EmployeeRecords.start" => "DESC"])
+            ->limit(1);
     }
 }

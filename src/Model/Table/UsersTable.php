@@ -35,13 +35,12 @@ class UsersTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void
-    {
+    public function initialize(array $config): void {
         parent::initialize($config);
 
         $this->setTable('users');
         $this->setDisplayField('username');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('username');
 
         $this->addBehavior('Timestamp');
     }
@@ -54,11 +53,6 @@ class UsersTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create')
-            ->add('id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
         $validator
             ->scalar('username')
             ->maxLength('username', 60)
@@ -77,10 +71,10 @@ class UsersTable extends Table
             ->notEmptyString('password');
 
         $validator
-            ->scalar('rol')
-            ->maxLength('rol', 20)
-            ->inList('rol', ['Administrador', 'Médico'])
-            ->notEmptyString('rol');
+            ->scalar('role')
+            ->maxLength('role', 20)
+            ->inList('role', ['ADMINISTRADOR', 'MÉDICO', 'ASISTENTE'])
+            ->notEmptyString('role');
 
         $validator
             ->scalar('employee_person_doc_type')

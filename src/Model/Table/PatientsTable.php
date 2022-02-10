@@ -44,6 +44,11 @@ class PatientsTable extends Table
         $this->setPrimaryKey(['person_doc_type', 'person_doc_num']);
 
         $this->addBehavior('Timestamp');
+        
+        $this->belongsTo('People', [
+            'foreignKey' => ['person_doc_type', 'person_doc_num'],
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**
