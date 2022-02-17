@@ -15,14 +15,20 @@ use Cake\ORM\Entity;
  * @property string $employee_person_doc_num
  * @property int $consulting_room_id
  * @property \Cake\I18n\FrozenTime $appointment_date
+ * @property \Cake\I18n\FrozenTime|null $cancel_date
  * @property string|null $cost
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property string $state
+ * @property string $user_created
+ * @property string|null $user_modified
  *
+ * @property \App\Model\Entity\Patient $patient
  * @property \App\Model\Entity\ConsultingRoom $consulting_room
  * @property \App\Model\Entity\Diagnostic[] $diagnostics
  * @property \App\Model\Entity\Recipe[] $recipes
+ * @property \App\Model\Entity\User $creator
+ * @property \App\Model\Entity\Modifier $modifier
  */
 class Appointment extends Entity
 {
@@ -42,12 +48,21 @@ class Appointment extends Entity
         'employee_person_doc_num' => true,
         'consulting_room_id' => true,
         'appointment_date' => true,
+        'cancel_date' => true,
         'cost' => true,
         'created' => true,
         'modified' => true,
         'state' => true,
+        'user_created' => true,
+        'user_modified' => true,
+
+        'patient' => true,
         'consulting_room' => true,
         'diagnostics' => true,
         'recipes' => true,
+        'creator' => true,
+        'modifier' => true,
+        
+        'diseases' => true,
     ];
 }

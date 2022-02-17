@@ -45,10 +45,14 @@ class PatientsTable extends Table
 
         $this->addBehavior('Timestamp');
         
-        $this->belongsTo('People', [
-            'foreignKey' => ['person_doc_type', 'person_doc_num'],
-            'joinType' => 'INNER',
-        ]);
+        $this->belongsTo('PatientPerson')
+            ->setForeignKey(['person_doc_type', 'person_doc_num'])
+            ->setJoinType('INNER')
+            ->setClassName('People');
+        
+        $this->belongsTo('People')
+            ->setForeignKey(['person_doc_type', 'person_doc_num'])
+            ->setJoinType('INNER');
     }
 
     /**
@@ -57,13 +61,7 @@ class PatientsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator
-    {
-        $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create')
-            ->add('id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
+    public function validationDefault(Validator $validator): Validator {
         $validator
             ->scalar('person_doc_type')
             ->allowEmptyString('person_doc_type', null, 'create');
@@ -80,18 +78,21 @@ class PatientsTable extends Table
 
         return $validator;
     }
+    
+    
+    public function enable(\App\Model\Entity\Patient &$patient) {
+        $patient->state = 'ACTIVO';
+        if ($this->save($patient)) {
+            return true;
+        }
+        return false;
+    }
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
-        $rules->add($rules->isUnique(['id']), ['errorField' => 'id']);
-
-        return $rules;
+    public function disable(\App\Model\Entity\Patient &$patient) {
+        $patient->state = 'INACTIVO';
+        if ($this->save($patient)) {
+            return true;
+        }
+        return false;
     }
 }

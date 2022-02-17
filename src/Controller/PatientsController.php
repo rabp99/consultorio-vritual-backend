@@ -21,10 +21,12 @@ class PatientsController extends AppController
         $this->getRequest()->allowMethod("GET");
         $sortColumn = $this->getRequest()->getQuery("sort_column");
         $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $personDocType = explode(',', $this->getRequest()->getQuery('person_doc_type'));
+        $personDocType = $this->getRequest()->getQuery('person_doc_type') ? 
+            explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
         $personFullName = $this->getRequest()->getQuery('person_full_name');
-        $state = explode(',', $this->getRequest()->getQuery('state'));
+        $state = $this->getRequest()->getQuery('state') ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
        
@@ -89,7 +91,7 @@ class PatientsController extends AppController
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum], [
-            'contain' => [],
+            'contain' => ['People'],
         ]);
 
         $this->set(compact('patient'));
@@ -105,18 +107,21 @@ class PatientsController extends AppController
         $this->getRequest()->allowMethod("POST");
         $patient = $this->Patients->newEntity($this->getRequest()->getData());
         $errors = null;
-        
-        if ($this->Patients->save($patient)) {
-            $message = __('El patient fue registrado correctamente');
-        }
-        else {
-            $message = __('El patient no fue registrado correctamente');
+                
+        try {
+            $this->Patients->getConnection()->begin();
+            $this->Patients->saveOrFail($patient);
+            $message = __('El paciente fue registrado correctamente');
+            $this->Patients->getConnection()->commit();
+        } catch (\PDOException $ex) {
+            $message = __('El paciente no fue registrado correctamente');
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
+            $this->Patients->getConnection()->rollback();
+        } finally {
+            $this->set(compact('patient', 'message', 'errors'));
+            $this->viewBuilder()->setOption('serialize', true);
         }
-        
-        $this->set(compact('patient', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
     }
 
     /**
@@ -136,9 +141,9 @@ class PatientsController extends AppController
         $errors = null;
         
         if ($this->Patients->save($patient)) {
-            $message = __('El patient fue modificado correctamente');
+            $message = __('El paciente fue modificado correctamente');
         } else {
-            $message = __('El patient no fue modificado correctamente');
+            $message = __('El paciente no fue modificado correctamente');
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -159,10 +164,9 @@ class PatientsController extends AppController
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum]);
-        $patient->state = 1;
         $errors = null;
         
-        if ($this->Patients->save($patient)) {
+        if ($this->Patients->enable($patient)) {
             $message = __('El paciente fue habilitado correctamente');
         } else {
             $message = __('El paciente no fue habilitado correctamente');
@@ -185,10 +189,9 @@ class PatientsController extends AppController
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum]);
-        $patient->state = 2;
         $errors = null;
         
-        if ($this->Patients->save($patient)) {
+        if ($this->Patients->disable($patient)) {
             $message = __('El paciente fue deshabilitado correctamente');
         } else {
             $message = __('El paciente no fue deshabilitado correctamente');

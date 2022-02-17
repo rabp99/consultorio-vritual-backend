@@ -103,7 +103,7 @@ class EmployeesController extends AppController
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $employee = $this->Employees->get([$personDocType, $personDocNum], [
-            'contain' => [],
+            'contain' => ['People'],
         ]);
 
         $this->set(compact('employee'));
@@ -143,7 +143,7 @@ class EmployeesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
+    public function edit() {
         $this->getRequest()->allowMethod("PUT");
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
@@ -151,11 +151,11 @@ class EmployeesController extends AppController
             $this->Employees->get([$personDocType, $personDocNum]), $this->request->getData()
         );
         $errors = null;
-        
+
         if ($this->Employees->save($employee)) {
-            $message = __('El employee fue modificado correctamente');
+            $message = __('El médico fue modificado correctamente');
         } else {
-            $message = __('El employee no fue modificado correctamente');
+            $message = __('El médico no fue modificado correctamente');
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
@@ -176,7 +176,7 @@ class EmployeesController extends AppController
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $start = $this->getRequest()->getData('start');
-        $employee = $this->Employees->get([$personDocType, $personDocNum]);
+        $employee = $this->Employees->get([$personDocType, $personDocNum], ['contain' => ['LastEmployeeRecord']]);
         $errors = null;
         
         if ($this->Employees->enable($employee, $start)) {

@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property string $state
+ * 
  * @property App\Model\Entity\Person $person
  * @property App\Model\Entity\EmployeeRecord[] $employee_records
  * @property App\Model\Entity\EmployeeRecord $last_employee_record

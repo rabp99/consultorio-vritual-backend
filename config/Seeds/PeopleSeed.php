@@ -1,25 +1,30 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\Fixture;
-
-use Cake\TestSuite\Fixture\TestFixture;
-use Faker\Factory;
+use Migrations\AbstractSeed;
 use Cake\I18n\FrozenDate;
+use Faker\Factory;
 
 /**
- * PeopleFixture
+ * People seed.
  */
-class PeopleFixture extends TestFixture
+class PeopleSeed extends AbstractSeed
 {
-    public $import = ['table' => 'people'];
-    
-    public function init(): void {
+    /**
+     * Run Method.
+     *
+     * Write your database seeder using this method.
+     *
+     * More information on writing seeds is available here:
+     * https://book.cakephp.org/phinx/0/en/seeding.html
+     *
+     * @return void
+     */
+    public function run() {
         $faker = Factory::create("es_PE");
-        $this->records = [];
-        
+        $data = [];
         for ($i = 0; $i < 10; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'doc_type' => 'DNI', 
                 'doc_num' => str_repeat(strval($i), 8),
                 'names' => $faker->name, 
@@ -33,7 +38,7 @@ class PeopleFixture extends TestFixture
         }
         
         for ($i = 0; $i < 10; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'doc_type' => 'CEX', 
                 'doc_num' => str_repeat(strval($i), 8),
                 'names' => $faker->name, 
@@ -46,7 +51,7 @@ class PeopleFixture extends TestFixture
             ];
         }
         
-        $this->records[] = [
+        $data[] = [
             'doc_type' => 'DNI', 
             'doc_num' => '12345678',
             'names' => $faker->name, 
@@ -58,7 +63,7 @@ class PeopleFixture extends TestFixture
             'gendre' => $faker->randomElement(['M', 'F']), 
         ];
         
-        $this->records[] = [
+        $data[] = [
             'doc_type' => 'DNI', 
             'doc_num' => '87654321',
             'names' => $faker->name, 
@@ -70,6 +75,8 @@ class PeopleFixture extends TestFixture
             'gendre' => $faker->randomElement(['M', 'F']), 
         ];
         
-        parent::init();
+        
+        $table = $this->table('people');
+        $table->insert($data)->save();
     }
 }

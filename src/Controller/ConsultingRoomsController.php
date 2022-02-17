@@ -184,4 +184,18 @@ class ConsultingRoomsController extends AppController
         $this->set(compact('consultingRoom', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
+    
+    /**
+     * Get List method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */   
+    public function getList() {
+        $this->getRequest()->allowMethod("GET");
+        $consultingRooms = $this->ConsultingRooms->find()->where(["ConsultingRooms.state" => "ACTIVO"]);
+
+        $this->set(compact('consultingRooms'));
+        $this->viewBuilder()->setOption('serialize', true);
+    }
+    
 }

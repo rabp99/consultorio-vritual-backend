@@ -181,7 +181,7 @@ class PlacesController extends AppController
      */   
     public function getList() {
         $this->getRequest()->allowMethod("GET");
-        $places = $this->Places->find()->where(["Places.state" => "Activo"]);
+        $places = $this->Places->find()->where(["Places.state" => "ACTIVO"]);
 
         $this->set(compact('places'));
         $this->viewBuilder()->setOption('serialize', true);

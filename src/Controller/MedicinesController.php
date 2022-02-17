@@ -176,4 +176,19 @@ class MedicinesController extends AppController
         $this->set(compact('medicine', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
+    
+    /**
+     * Get List method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */   
+    public function getList() {
+        $this->getRequest()->allowMethod("GET");
+        $medicines = $this->Medicines->find()
+            ->select(['id', 'description', 'presentation'])
+            ->where(["Medicines.state" => "ACTIVO"]);
+
+        $this->set(compact('medicines'));
+        $this->viewBuilder()->setOption('serialize', true);
+    }
 }

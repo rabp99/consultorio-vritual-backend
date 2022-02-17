@@ -71,11 +71,6 @@ class DiagnosticsTable extends Table
             ->allowEmptyString('id', null, 'create')
             ->add('id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
-        $validator
-            ->scalar('state')
-            ->requirePresence('state', 'create')
-            ->notEmptyString('state');
-
         return $validator;
     }
 

@@ -7,11 +7,13 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\I18n\FrozenDate;
 
 /**
  * Employees Model
  * 
  * @property \App\Model\Table\EmployeeRecordsTable $EmployeeRecords
+ * @property \App\Model\Table\PeopleTable $People
  *
  * @method \App\Model\Entity\Employee newEmptyEntity()
  * @method \App\Model\Entity\Employee newEntity(array $data, array $options = [])
@@ -46,10 +48,11 @@ class EmployeesTable extends Table
 
         $this->addBehavior('Timestamp');
         
-        $this->belongsTo('People', [
-            'foreignKey' => ['person_doc_type', 'person_doc_num'],
-            'joinType' => 'INNER',
-        ]);
+        $this->belongsTo('EmployeePerson')
+            ->setForeignKey(['person_doc_type', 'person_doc_num'])
+            ->setJoinType('INNER')
+            ->setClassName('People');
+        
         $this->hasMany('EmployeeRecords', [
             'foreignKey' => ['employee_person_doc_type', 'employee_person_doc_num'],
         ]);
@@ -57,6 +60,10 @@ class EmployeesTable extends Table
             ->setForeignKey(['employee_person_doc_type', 'employee_person_doc_num'])
             ->setClassName('EmployeeRecords')
             ->setFinder("last");
+        
+        $this->belongsTo('People')
+            ->setForeignKey(['person_doc_type', 'person_doc_num'])
+            ->setJoinType('INNER');
     }
 
     /**
@@ -98,14 +105,52 @@ class EmployeesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker {
         $rules->add($rules->isUnique(['cmp']), ['errorField' => 'cmp']);
-
+        $rules->add(function ($entity, $options) {
+            if (!$entity->last_employee_record) {
+                return true;
+            }
+            if (!$entity->employee_records) {
+                return true;
+            }
+            
+            if ($entity->employee_records[0]->start < $entity->last_employee_record->end) {
+                return false;
+            }
+            return true;
+        }, 'startOufOfDate',
+        [
+            'errorField' => 'start',
+            'message' => __('La fecha de inicio es inferior a la última fecha final registrada')
+        ]);
+        $rules->add(function ($entity, $options) {
+            if (!$entity->last_employee_record) {
+                return true;
+            }
+            
+            if (!$entity->employee_records) {
+                return true;
+            }
+            
+            if ($entity->employee_records[0]->end === null) {
+                return true;
+            }
+            
+            if ($entity->employee_records[0]->end < $entity->last_employee_record->start) {
+                return false;
+            }
+            return true;
+        }, 'endOufOfDate',
+        [
+            'errorField' => 'end',
+            'message' => __('La fecha final es inferior a la fecha de inicio registrada')
+        ]);
         return $rules;
     }
-
-    public function enable(\App\Model\Entity\Employee &$employee, \Cake\I18n\FrozenDate $start) {
+        
+    public function enable(\App\Model\Entity\Employee &$employee, $start) {
         $employee->state = 'ACTIVO';
         $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
-        $lastEmployeeRecord->start = $start;
+        $lastEmployeeRecord->start = new \Cake\I18n\FrozenDate($start);
         $employee->employee_records = [$lastEmployeeRecord];
         if ($this->save($employee)) {
             return true;
@@ -113,15 +158,13 @@ class EmployeesTable extends Table
         return false;
     }
 
-    public function disable(\App\Model\Entity\Employee &$employee, \Cake\I18n\FrozenDate $end) {
+    public function disable(\App\Model\Entity\Employee &$employee, $end) {
         $employee->state = 'INACTIVO';
+        $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->id);
+        $employeeRecord->end = new \Cake\I18n\FrozenDate($end);
+        $employee->employee_records = [$employeeRecord];
         if ($this->save($employee)) {
-            $lastEmployeeRecord = $employee->last_employee_record;
-            $lastEmployeeRecord->end = $end;
-            if ($this->EmployeeRecords->save($lastEmployeeRecord)) {
-                return true;
-            }
-            return false;
+            return true;
         }
         return false;
     }

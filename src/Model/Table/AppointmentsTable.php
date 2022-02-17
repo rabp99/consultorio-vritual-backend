@@ -7,7 +7,8 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-
+use Cake\I18n\FrozenTime;
+        
 /**
  * Appointments Model
  *
@@ -33,21 +34,26 @@ use Cake\Validation\Validator;
  */
 class AppointmentsTable extends Table
 {
+    private const PENDIENTE = 'PENDIENTE';
+    private const TERMINADA = 'TERMINADA';
+    private const REPROGRAMADA = 'REPROGRAMADA';
+    private const CANCELADA = 'CANCELADA';
+    
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void
-    {
+    public function initialize(array $config): void {
         parent::initialize($config);
 
         $this->setTable('appointments');
-        $this->setDisplayField('id');
+        $this->setDisplayField('appointment_date');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('Userstamp');
 
         $this->belongsTo('ConsultingRooms', [
             'foreignKey' => 'consulting_room_id',
@@ -61,12 +67,21 @@ class AppointmentsTable extends Table
             'foreignKey' => ['patient_person_doc_type', 'patient_person_doc_num'],
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Creator')
+            ->setForeignKey('user_creator')
+            ->setJoinType('INNER')
+            ->setClassName('Users');
         $this->hasMany('Diagnostics', [
             'foreignKey' => 'appointment_id',
         ]);
         $this->hasMany('Recipes', [
             'foreignKey' => 'appointment_id',
         ]);
+        
+        $this->belongsToMany('Diseases', 
+            ['joinTable' => 'diagnostics'])
+            ->setForeignKey('appointment_id')
+            ->setTargetForeignKey('disease_id');
     }
 
     /**
@@ -75,8 +90,7 @@ class AppointmentsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator
-    {
+    public function validationDefault(Validator $validator): Validator {
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create')
@@ -110,6 +124,10 @@ class AppointmentsTable extends Table
             ->notEmptyDateTime('appointment_date');
 
         $validator
+            ->dateTime('cancel_date')
+            ->allowEmptyDateTime('cancel_date');
+
+        $validator
             ->decimal('cost')
             ->allowEmptyString('cost');
 
@@ -128,11 +146,45 @@ class AppointmentsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
+    public function buildRules(RulesChecker $rules): RulesChecker {
         $rules->add($rules->isUnique(['id']), ['errorField' => 'id']);
         $rules->add($rules->existsIn(['consulting_room_id'], 'ConsultingRooms'), ['errorField' => 'consulting_room_id']);
+        $rules->add($rules->existsIn(['user_created'], 'Creator'), ['errorField' => 'user_created']);
 
         return $rules;
+    }
+    
+    public function cancel(\App\Model\Entity\Appointment &$appointment) {
+        $appointment->state = self::CANCELADA;
+        $appointment->cancel_date = FrozenTime::now();
+        if ($this->save($appointment)) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function undoCancel(\App\Model\Entity\Appointment &$appointment) {
+        $appointment->state = self::PENDIENTE;
+        $appointment->cancel_date = null;
+        if ($this->save($appointment)) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function reschedule(\App\Model\Entity\Appointment &$appointment) {
+        $appointment->state = self::REPROGRAMADA;
+        if ($this->save($appointment)) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function attend(\App\Model\Entity\Appointment &$appointment) {
+        $appointment->state = self::TERMINADA;
+        if ($this->save($appointment)) {
+            return true;
+        }
+        return false;
     }
 }

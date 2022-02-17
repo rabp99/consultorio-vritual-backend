@@ -38,12 +38,11 @@ class RecipesTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void
-    {
+    public function initialize(array $config): void {
         parent::initialize($config);
 
         $this->setTable('recipes');
-        $this->setDisplayField('id');
+        $this->setDisplayField('amount');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -52,8 +51,9 @@ class RecipesTable extends Table
             'foreignKey' => 'appointment_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('RecipeDetails', [
-            'foreignKey' => 'recipe_id',
+        $this->belongsTo('Medicines', [
+            'foreignKey' => 'medicine_id',
+            'joinType' => 'INNER',
         ]);
     }
 
@@ -63,17 +63,26 @@ class RecipesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator
-    {
+    public function validationDefault(Validator $validator): Validator {
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create')
             ->add('id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
-            ->scalar('state')
-            ->requirePresence('state', 'create')
-            ->notEmptyString('state');
+            ->integer('amount')
+            ->requirePresence('amount', 'create')
+            ->notEmptyString('amount');
+
+        $validator
+            ->integer('days')
+            ->allowEmptyString('days');
+
+        $validator
+            ->scalar('prescription')
+            ->maxLength('prescription', 60)
+            ->requirePresence('prescription', 'create')
+            ->notEmptyString('prescription');
 
         return $validator;
     }
@@ -85,10 +94,10 @@ class RecipesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
+    public function buildRules(RulesChecker $rules): RulesChecker {
         $rules->add($rules->isUnique(['id']), ['errorField' => 'id']);
         $rules->add($rules->existsIn(['appointment_id'], 'Appointments'), ['errorField' => 'appointment_id']);
+        $rules->add($rules->existsIn(['medicine_id'], 'Medicines'), ['errorField' => 'medicine_id']);
 
         return $rules;
     }

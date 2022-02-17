@@ -10,12 +10,15 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $appointment_id
+ * @property int $medicine_id
+ * @property int $amount
+ * @property int|null $days
+ * @property string $prescription
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime|null $modified
- * @property string $state
  *
  * @property \App\Model\Entity\Appointment $appointment
- * @property \App\Model\Entity\RecipeDetail[] $recipe_details
+ * @property \App\Model\Entity\Medicine $medicine
  */
 class Recipe extends Entity
 {
@@ -30,10 +33,14 @@ class Recipe extends Entity
      */
     protected $_accessible = [
         'appointment_id' => true,
+        'medicine_id' => true,
+        'amount' => true,
+        'days' => true,
+        'prescription' => true,
         'created' => true,
         'modified' => true,
-        'state' => true,
+        
         'appointment' => true,
-        'recipe_details' => true,
+        'medicine' => true,
     ];
 }

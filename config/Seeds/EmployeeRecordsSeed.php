@@ -1,23 +1,29 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\Fixture;
-
-use Cake\TestSuite\Fixture\TestFixture;
+use Migrations\AbstractSeed;
 use Cake\I18n\FrozenDate;
 
 /**
- * EmployeeRecordsFixture
+ * EmployeeRecords seed.
  */
-class EmployeeRecordsFixture extends TestFixture
+class EmployeeRecordsSeed extends AbstractSeed
 {
-    public $import = ['table' => 'employee_records'];
-    
-    public function init(): void {
-        $this->records = [];
+    /**
+     * Run Method.
+     *
+     * Write your database seeder using this method.
+     *
+     * More information on writing seeds is available here:
+     * https://book.cakephp.org/phinx/0/en/seeding.html
+     *
+     * @return void
+     */
+    public function run() {
+        $data = [];
         
         for ($i = 0; $i < 5; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'employee_person_doc_type' => 'DNI',
                 'employee_person_doc_num' => str_repeat(strval($i), 8),
                 'start' => FrozenDate::now(), 
@@ -26,7 +32,7 @@ class EmployeeRecordsFixture extends TestFixture
         }
         
         for ($i = 0; $i < 5; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'employee_person_doc_type' => 'CEX',
                 'employee_person_doc_num' => str_repeat(strval($i), 8),
                 'start' => FrozenDate::now(), 
@@ -34,7 +40,7 @@ class EmployeeRecordsFixture extends TestFixture
             ];
         }
         
-        $this->records[] = [
+        $data[] = [
             'employee_person_doc_type' => 'DNI',
             'employee_person_doc_num' => '12345678',
             'start' => FrozenDate::now()->modify('- 2days'), 
@@ -43,6 +49,7 @@ class EmployeeRecordsFixture extends TestFixture
             'modified' => FrozenDate::now(), 
         ];
         
-        parent::init();
+        $table = $this->table('employee_records');
+        $table->insert($data)->save();
     }
 }

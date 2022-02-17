@@ -70,7 +70,30 @@ $routes->scope('/api', function (RouteBuilder $builder) {
             ]
         ]
     ]);
-    $builder->resources('appointments');
+    $builder->resources('appointments', [
+        'map' => [
+            'get_to_edit/:id' => [
+                'action' => 'getToEdit',
+                'method' => 'GET'
+            ],
+            'cancel/:id' => [
+                'action' => 'cancel',
+                'method' => 'DELETE'
+            ],
+            'undo_cancel/:id' => [
+                'action' => 'undoCancel',
+                'method' => 'PUT'
+            ],
+            'reschedule/:id' => [
+                'action' => 'reschedule',
+                'method' => 'PUT'
+            ],
+            'attend/:id' => [
+                'action' => 'attend',
+                'method' => 'PUT'
+            ]
+        ]
+    ]);
     $builder->resources('consulting-rooms', [
         'map' => [
             'enable' => [
@@ -80,7 +103,11 @@ $routes->scope('/api', function (RouteBuilder $builder) {
             'disable' => [
                 'action' => 'disable',
                 'method' => 'POST'
-            ]
+            ],
+            'get_list' => [
+                'action' => 'getList',
+                'method' => 'GET'
+            ],
         ]
     ]);
     $builder->resources('medicines', [
@@ -92,7 +119,11 @@ $routes->scope('/api', function (RouteBuilder $builder) {
             'disable' => [
                 'action' => 'disable',
                 'method' => 'POST'
-            ]
+            ],
+            'get_list' => [
+                'action' => 'getList',
+                'method' => 'GET'
+            ],
         ]
     ]);
     $builder->resources('diseases', [
@@ -109,6 +140,14 @@ $routes->scope('/api', function (RouteBuilder $builder) {
     ]);
     $builder->resources('employees', [
         'map' => [
+            ':person_doc_type/:person_doc_num' => [
+                'action' => 'view',
+                'method' => 'GET'
+            ],
+            'update/:person_doc_type/:person_doc_num' => [
+                'action' => 'edit',
+                'method' => 'PUT'
+            ],
             'enable' => [
                 'action' => 'enable',
                 'method' => 'POST'
@@ -121,6 +160,14 @@ $routes->scope('/api', function (RouteBuilder $builder) {
     ]);
     $builder->resources('patients', [
         'map' => [
+            ':person_doc_type/:person_doc_num' => [
+                'action' => 'view',
+                'method' => 'GET'
+            ],
+            'update/:person_doc_type/:person_doc_num' => [
+                'action' => 'edit',
+                'method' => 'PUT'
+            ],
             'enable' => [
                 'action' => 'enable',
                 'method' => 'POST'

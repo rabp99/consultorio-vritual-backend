@@ -1,25 +1,29 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\Fixture;
-
-use Cake\TestSuite\Fixture\TestFixture;
-use Faker\Factory;
+use Migrations\AbstractSeed;
 use Cake\I18n\FrozenDate;
 
 /**
- * PatientsFixture
+ * Patients seed.
  */
-class PatientsFixture extends TestFixture
+class PatientsSeed extends AbstractSeed
 {
-    public $import = ['table' => 'patients'];
-    
-    public function init(): void {
-        $faker = Factory::create("es_PE");
-        $this->records = [];
+    /**
+     * Run Method.
+     *
+     * Write your database seeder using this method.
+     *
+     * More information on writing seeds is available here:
+     * https://book.cakephp.org/phinx/0/en/seeding.html
+     *
+     * @return void
+     */
+    public function run() {
+        $data = [];
         
         for ($i = 5; $i < 10; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'person_doc_type' => 'DNI',
                 'person_doc_num' => str_repeat(strval($i), 8),
                 'created' => FrozenDate::now(),
@@ -28,7 +32,7 @@ class PatientsFixture extends TestFixture
         }
 
         for ($i = 5; $i < 10; $i++) {
-            $this->records[] = [
+            $data[] = [
                 'person_doc_type' => 'CEX',
                 'person_doc_num' => str_repeat(strval($i), 8),
                 'created' => FrozenDate::now(),
@@ -36,13 +40,14 @@ class PatientsFixture extends TestFixture
             ];
         }
         
-        $this->records[] = [
+        $data[] = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '87654321',
             'created' => FrozenDate::now(),
             'state' => 'INACTIVO'
         ];
         
-        parent::init();
+        $table = $this->table('patients');
+        $table->insert($data)->save();
     }
 }

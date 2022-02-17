@@ -13,7 +13,6 @@ use Cake\ORM\Entity;
  * @property int $disease_id
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime|null $modified
- * @property string $state
  *
  * @property \App\Model\Entity\Appointment $appointment
  * @property \App\Model\Entity\Disease $disease
@@ -34,7 +33,7 @@ class Diagnostic extends Entity
         'disease_id' => true,
         'created' => true,
         'modified' => true,
-        'state' => true,
+        
         'appointment' => true,
         'disease' => true,
     ];
