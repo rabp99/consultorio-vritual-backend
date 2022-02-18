@@ -242,7 +242,7 @@ class AppointmentsController extends AppController
         );
         $errors = null;
         
-        if ($appointment->state === 'PENDIENTE') {
+        if (in_array($appointment->state, ['PENDIENTE', 'REPROGRAMADA'])) {
             if ($this->Appointments->reschedule($appointment)) {
                 $message = __('La cita fue reprogramada correctamente');
             } else {

@@ -173,6 +173,7 @@ class AppointmentsTable extends Table
     }
     
     public function reschedule(\App\Model\Entity\Appointment &$appointment) {
+        $appointment->setAccess('consulting_room', false);
         $appointment->state = self::REPROGRAMADA;
         if ($this->save($appointment)) {
             return true;
