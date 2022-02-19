@@ -91,6 +91,10 @@ $routes->scope('/api', function (RouteBuilder $builder) {
             'attend/:id' => [
                 'action' => 'attend',
                 'method' => 'PUT'
+            ],
+            'get_by_patient/:patient_person_doc_type/:patient_person_doc_num' => [
+                'action' => 'getByPatient',
+                'method' => 'GET'
             ]
         ]
     ]);

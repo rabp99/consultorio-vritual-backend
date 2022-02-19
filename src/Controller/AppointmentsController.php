@@ -286,4 +286,26 @@ class AppointmentsController extends AppController
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
+    
+    /**
+     * Get by Patient method
+     *
+     * @param string|null patient_person_doc_type Patient doc type.
+     * @param string|null patient_person_doc_num Patient doc num.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function getByPatient() {
+        $this->getRequest()->allowMethod("GET");
+        $patient_person_doc_type = $this->getRequest()->getParam('patient_person_doc_type');
+        $patient_person_doc_num = $this->getRequest()->getParam('patient_person_doc_num');
+        
+        $appointments = $this->Appointments->find('byPatient', [
+            'patient_person_doc_type' => $patient_person_doc_type,
+            'patient_person_doc_num' => $patient_person_doc_num
+        ]);
+        
+        $this->set(compact('appointments'));
+        $this->viewBuilder()->setOption('serialize', true);
+    }
 }

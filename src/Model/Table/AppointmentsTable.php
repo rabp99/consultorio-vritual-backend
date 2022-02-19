@@ -188,4 +188,17 @@ class AppointmentsTable extends Table
         }
         return false;
     }
+    
+    public function findByPatient(Query $query, array $options) {
+        $patient_person_doc_type = $options['patient_person_doc_type'];
+        $patient_person_doc_num = $options['patient_person_doc_num'];
+        return $query
+            ->select(['id', 'appointment_date'])
+            ->where([
+                'patient_person_doc_type' => $patient_person_doc_type,
+                'patient_person_doc_num' => $patient_person_doc_num,
+                'state' => self::TERMINADA
+            ])
+            ->order(['appointment_date' => 'DESC']);
+    }
 }
