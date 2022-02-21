@@ -21,7 +21,6 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
-use Psr\Http\Message\ServerRequestInterface;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\Exception\MissingPluginException;
@@ -33,6 +32,7 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Application setup class.
@@ -47,7 +47,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      *
      * @return void
      */
-    public function bootstrap(): void {
+    public function bootstrap(): void
+    {
         // Call parent to load bootstrap from files.
         parent::bootstrap();
 
@@ -79,7 +80,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
      * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
      */
-    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue {
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
         $middlewareQueue
             // Catch any exceptions in the lower layers,
             // and make an error page/response
@@ -115,7 +117,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @return void
      * @link https://book.cakephp.org/4/en/development/dependency-injection.html#dependency-injection
      */
-    public function services(ContainerInterface $container): void {
+    public function services(ContainerInterface $container): void
+    {
     }
 
     /**
@@ -125,7 +128,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      *
      * @return void
      */
-    protected function bootstrapCli(): void {
+    protected function bootstrapCli(): void
+    {
         try {
             $this->addPlugin('Bake');
             $this->addPlugin('Migrations');
@@ -133,26 +137,27 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // Do not halt if the plugin is missing
         }
     }
-    
-    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface {
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
         $service = new AuthenticationService();
-      
+
         //\Cake\Log\Log::write('debug', json_encode(App));
-        
+
         $fields = [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ];
-        
+
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/api/users/login.json'
+            'loginUrl' => '/api/users/login.json',
         ]);
-        
+
         $service->loadIdentifier('Authentication.Password', [
             'fields' => $fields,
             'resolver' => [
-                'className' => 'Authentication.Orm'
+                'className' => 'Authentication.Orm',
             ],
             'passwordHasher' => [
                 'className' => 'Authentication.Fallback',
@@ -160,24 +165,24 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                     'Authentication.Default',
                     [
                         'className' => 'Authentication.Legacy',
-                        'hashType' => 'md5'
-                    ]
-                ]
-            ]
+                        'hashType' => 'md5',
+                    ],
+                ],
+            ],
         ]);
-        
+
         $service->loadIdentifier('Authentication.JwtSubject', [
-            'tokenField' => "username",
+            'tokenField' => 'username',
         ]);
-        
+
         if (defined('CONFIG')) {
             $service->loadAuthenticator('Authentication.Jwt', [
                 'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
                 'algorithms' => ['RS256'],
-                'returnPayload' => false
+                'returnPayload' => false,
             ]);
         }
-        
+
         return $service;
     }
 }

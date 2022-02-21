@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 /**
  * Appointments Controller
  *
@@ -17,52 +16,53 @@ class AppointmentsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index() {
-        $this->getRequest()->allowMethod("GET");
-        $sortColumn = $this->getRequest()->getQuery("sort_column");
-        $sortOrder = $this->getRequest()->getQuery("sort_order");
+    public function index()
+    {
+        $this->getRequest()->allowMethod('GET');
+        $sortColumn = $this->getRequest()->getQuery('sort_column');
+        $sortOrder = $this->getRequest()->getQuery('sort_order');
         $appointmentDate = $this->getRequest()->getQuery('appointment_date');
         $state = $this->getRequest()->getQuery('state') ?
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
-        
+
         $query = $this->Appointments->find();
-            
+
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters    
+
+        // filters
         if ($appointmentDate) {
-           $query->where(["DATE_FORMAT(Appointments.appointment_date, '%Y-%m-%d') =" => $appointmentDate]);
+            $query->where(["DATE_FORMAT(Appointments.appointment_date, '%Y-%m-%d') =" => $appointmentDate]);
         }
-    
+
         if ($state) {
-           $query->where(['Appointments.state IN' => $state]);
+            $query->where(['Appointments.state IN' => $state]);
         }
 
         $count = $query->count();
         if (!$itemsPerPage) {
             $itemsPerPage = $count;
         }
-        
+
         $this->paginate = [
             'contain' => [
-                'ConsultingRooms', 
+                'ConsultingRooms',
                 'Employees' => 'EmployeePerson',
-                'Patients' => 'PatientPerson'
+                'Patients' => 'PatientPerson',
             ],
         ];
         $appointments = $this->paginate($query, [
-            'limit' => $itemsPerPage
+            'limit' => $itemsPerPage,
         ]);
         $paginate = $this->request->getAttribute('paging')['Appointments'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage']
+            'itemsPerPage' =>  $paginate['perPage'],
         ];
-        
+
         $this->set(compact('appointments', 'pagination', 'count'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -73,11 +73,12 @@ class AppointmentsController extends AppController
      * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function view($id = null) {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function view($id = null)
+    {
+        $this->getRequest()->allowMethod('GET');
         $appointment = $this->Appointments->get($id, [
-            'contain' => ['Patients' => 'People', 'Employees' => 'People', 'ConsultingRooms', 'Diagnostics', 'Recipes']
+            'contain' => ['Patients' => 'People', 'Employees' => 'People', 'ConsultingRooms', 'Diagnostics', 'Recipes'],
         ]);
 
         $this->set(compact('appointment'));
@@ -90,11 +91,12 @@ class AppointmentsController extends AppController
      * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function getToEdit($id = null) {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function getToEdit($id = null)
+    {
+        $this->getRequest()->allowMethod('GET');
         $appointment = $this->Appointments->get($id, [
-            'contain' => ['Patients' => 'People', 'Employees' => 'People']
+            'contain' => ['Patients' => 'People', 'Employees' => 'People'],
         ]);
 
         $this->set(compact('appointment'));
@@ -106,11 +108,12 @@ class AppointmentsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-        $this->getRequest()->allowMethod("POST");
+    public function add()
+    {
+        $this->getRequest()->allowMethod('POST');
         $appointment = $this->Appointments->newEntity($this->getRequest()->getData());
         $errors = null;
-        
+
         try {
             $this->Appointments->getConnection()->begin();
             $this->Appointments->saveOrFail($appointment);
@@ -130,7 +133,6 @@ class AppointmentsController extends AppController
             $this->set(compact('appointment', 'message', 'errors'));
             $this->viewBuilder()->setOption('serialize', true);
         }
-        
     }
 
     /**
@@ -140,13 +142,15 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
-        $this->getRequest()->allowMethod("PUT");
+    public function edit($id = null)
+    {
+        $this->getRequest()->allowMethod('PUT');
         $appointment = $this->Appointments->patchEntity(
-            $this->Appointments->get($id), $this->request->getData()
+            $this->Appointments->get($id),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if (in_array($appointment->state, ['PENDIENTE', 'REPROGRAMADA'])) {
             if ($this->Appointments->save($appointment)) {
                 $message = __('La cita fue modificada correctamente');
@@ -160,7 +164,7 @@ class AppointmentsController extends AppController
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -172,12 +176,13 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function cancel() {
+    public function cancel()
+    {
         $this->getRequest()->allowMethod(['DELETE']);
-        $id = $this->getRequest()->getParam("id");
+        $id = $this->getRequest()->getParam('id');
         $appointment = $this->Appointments->get($id);
         $errors = null;
-        
+
         if (in_array($appointment->state, ['PENDIENTE', 'REPROGRAMADA'])) {
             if ($this->Appointments->cancel($appointment)) {
                 $message = __('La cita fue cancelada correctamente');
@@ -191,11 +196,11 @@ class AppointmentsController extends AppController
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
-    
+
     /**
      * Undo Cancel method
      *
@@ -203,12 +208,13 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function undoCancel() {
+    public function undoCancel()
+    {
         $this->getRequest()->allowMethod(['PUT']);
-        $id = $this->getRequest()->getParam("id");
+        $id = $this->getRequest()->getParam('id');
         $appointment = $this->Appointments->get($id);
         $errors = null;
-        
+
         if ($appointment->state === 'CANCELADA') {
             if ($this->Appointments->undoCancel($appointment)) {
                 $message = __('Se anuló la cancelación de la cita correctamente');
@@ -222,11 +228,11 @@ class AppointmentsController extends AppController
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
-    
+
     /**
      * Reschedule method
      *
@@ -234,14 +240,16 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function reschedule() {
+    public function reschedule()
+    {
         $this->getRequest()->allowMethod(['PUT']);
-        $id = $this->getRequest()->getParam("id");
+        $id = $this->getRequest()->getParam('id');
         $appointment = $this->Appointments->patchEntity(
-            $this->Appointments->get($id), $this->request->getData()
+            $this->Appointments->get($id),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if (in_array($appointment->state, ['PENDIENTE', 'REPROGRAMADA'])) {
             if ($this->Appointments->reschedule($appointment)) {
                 $message = __('La cita fue reprogramada correctamente');
@@ -255,11 +263,11 @@ class AppointmentsController extends AppController
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
-    
+
     /**
      * Attend method
      *
@@ -267,14 +275,16 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function attend() {
-        $this->getRequest()->allowMethod("PUT");
+    public function attend()
+    {
+        $this->getRequest()->allowMethod('PUT');
         $id = $this->getRequest()->getParam('id');
         $appointment = $this->Appointments->patchEntity(
-            $this->Appointments->get($id), $this->request->getData()
+            $this->Appointments->get($id),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if ($this->Appointments->attend($appointment)) {
             $message = __('Se registró la atención correctamente');
         } else {
@@ -282,11 +292,11 @@ class AppointmentsController extends AppController
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('appointment', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
-    
+
     /**
      * Get by Patient method
      *
@@ -295,16 +305,17 @@ class AppointmentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function getByPatient() {
-        $this->getRequest()->allowMethod("GET");
+    public function getByPatient()
+    {
+        $this->getRequest()->allowMethod('GET');
         $patient_person_doc_type = $this->getRequest()->getParam('patient_person_doc_type');
         $patient_person_doc_num = $this->getRequest()->getParam('patient_person_doc_num');
-        
+
         $appointments = $this->Appointments->find('byPatient', [
             'patient_person_doc_type' => $patient_person_doc_type,
-            'patient_person_doc_num' => $patient_person_doc_num
+            'patient_person_doc_num' => $patient_person_doc_num,
         ]);
-        
+
         $this->set(compact('appointments'));
         $this->viewBuilder()->setOption('serialize', true);
     }

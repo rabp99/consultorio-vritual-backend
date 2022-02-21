@@ -21,6 +21,7 @@
         "fzaninotto/faker": "^1.9",
         "josegonzalez/dotenv": "^3.2",
         "lordsimal/cakephp-psalm": "@dev",
+        "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "~8.5.0 || ^9.3",
         "psy/psysh": "@stable",
         "vimeo/psalm": "^4.21"

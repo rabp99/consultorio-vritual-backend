@@ -14,10 +14,10 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property string $state
- * 
- * @property App\Model\Entity\Person $person
- * @property App\Model\Entity\EmployeeRecord[] $employee_records
- * @property App\Model\Entity\EmployeeRecord $last_employee_record
+ *
+ * @property \App\Model\Entity\App\Model\Entity\Person $person
+ * @property \App\Model\Entity\App\Model\Entity\EmployeeRecord[] $employee_records
+ * @property \App\Model\Entity\App\Model\Entity\EmployeeRecord $last_employee_record
  */
 class Employee extends Entity
 {
@@ -35,7 +35,7 @@ class Employee extends Entity
         'created' => true,
         'modified' => true,
         'state' => true,
-        
+
         'person' => true,
         'employee_records' => true,
         'last_employee_record' => true,

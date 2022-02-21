@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -12,7 +10,6 @@ use Cake\Validation\Validator;
  * Medicines Model
  *
  * @property \App\Model\Table\RecipeDetailsTable&\Cake\ORM\Association\HasMany $RecipeDetails
- *
  * @method \App\Model\Entity\Medicine newEmptyEntity()
  * @method \App\Model\Entity\Medicine newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Medicine[] newEntities(array $data, array $options = [])
@@ -26,7 +23,6 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Medicine[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Medicine[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Medicine[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class MedicinesTable extends Table

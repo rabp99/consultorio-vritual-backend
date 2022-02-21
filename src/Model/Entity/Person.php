@@ -44,10 +44,11 @@ class Person extends Entity
         'gendre' => true,
         'tels' => true,
     ];
-    
+
     protected $_virtual = ['full_name'];
-    
-    protected function _getFullName(): string {
+
+    protected function _getFullName(): string
+    {
         return $this->last_name1 . ' ' . $this->last_name2 . ', ' . $this->names;
     }
 }

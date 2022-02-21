@@ -8,18 +8,17 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 
-
 /**
  * Userstamp behavior
  */
 class UserstampBehavior extends Behavior
 {
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void {
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    {
         if ($entity->isNew()) {
             $entity->set('user_created', '70801887');
         } else {
             $entity->set('user_modified', '70801887');
         }
     }
-
 }

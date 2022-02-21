@@ -62,7 +62,7 @@ class Appointment extends Entity
         'recipes' => true,
         'creator' => true,
         'modifier' => true,
-        
+
         'diseases' => true,
     ];
 }

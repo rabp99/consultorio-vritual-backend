@@ -3,18 +3,16 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
+use Cake\I18n\FrozenDate;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Cake\I18n\FrozenDate;
 
 /**
  * Employees Model
- * 
+ *
  * @property \App\Model\Table\EmployeeRecordsTable $EmployeeRecords
  * @property \App\Model\Table\PeopleTable $People
- *
  * @method \App\Model\Entity\Employee newEmptyEntity()
  * @method \App\Model\Entity\Employee newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Employee[] newEntities(array $data, array $options = [])
@@ -28,7 +26,6 @@ use Cake\I18n\FrozenDate;
  * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Employee[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class EmployeesTable extends Table
@@ -39,7 +36,8 @@ class EmployeesTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void {
+    public function initialize(array $config): void
+    {
         parent::initialize($config);
 
         $this->setTable('employees');
@@ -47,20 +45,20 @@ class EmployeesTable extends Table
         $this->setPrimaryKey(['person_doc_type', 'person_doc_num']);
 
         $this->addBehavior('Timestamp');
-        
+
         $this->belongsTo('EmployeePerson')
             ->setForeignKey(['person_doc_type', 'person_doc_num'])
             ->setJoinType('INNER')
             ->setClassName('People');
-        
+
         $this->hasMany('EmployeeRecords', [
             'foreignKey' => ['employee_person_doc_type', 'employee_person_doc_num'],
         ]);
         $this->hasOne('LastEmployeeRecord')
             ->setForeignKey(['employee_person_doc_type', 'employee_person_doc_num'])
             ->setClassName('EmployeeRecords')
-            ->setFinder("last");
-        
+            ->setFinder('last');
+
         $this->belongsTo('People')
             ->setForeignKey(['person_doc_type', 'person_doc_num'])
             ->setJoinType('INNER');
@@ -72,7 +70,8 @@ class EmployeesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator {
+    public function validationDefault(Validator $validator): Validator
+    {
         $validator
             ->scalar('person_doc_type')
             ->allowEmptyString('person_doc_type', null, 'create');
@@ -103,7 +102,8 @@ class EmployeesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules): RulesChecker {
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
         $rules->add($rules->isUnique(['cmp']), ['errorField' => 'cmp']);
         $rules->add(function ($entity, $options) {
             if (!$entity->last_employee_record) {
@@ -112,42 +112,46 @@ class EmployeesTable extends Table
             if (!$entity->employee_records) {
                 return true;
             }
-            
+
             if ($entity->employee_records[0]->start < $entity->last_employee_record->end) {
                 return false;
             }
+
             return true;
         }, 'startOufOfDate',
         [
             'errorField' => 'start',
-            'message' => __('La fecha de inicio es inferior a la última fecha final registrada')
+            'message' => __('La fecha de inicio es inferior a la última fecha final registrada'),
         ]);
         $rules->add(function ($entity, $options) {
             if (!$entity->last_employee_record) {
                 return true;
             }
-            
+
             if (!$entity->employee_records) {
                 return true;
             }
-            
+
             if ($entity->employee_records[0]->end === null) {
                 return true;
             }
-            
+
             if ($entity->employee_records[0]->end < $entity->last_employee_record->start) {
                 return false;
             }
+
             return true;
         }, 'endOufOfDate',
         [
             'errorField' => 'end',
-            'message' => __('La fecha final es inferior a la fecha de inicio registrada')
+            'message' => __('La fecha final es inferior a la fecha de inicio registrada'),
         ]);
+
         return $rules;
     }
-        
-    public function enable(\App\Model\Entity\Employee &$employee, $start): bool {
+
+    public function enable(\App\Model\Entity\Employee &$employee, string $start): bool
+    {
         $employee->state = 'ACTIVO';
         $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
         $lastEmployeeRecord->start = new FrozenDate($start);
@@ -155,12 +159,14 @@ class EmployeesTable extends Table
         if ($this->save($employee)) {
             return true;
         }
+
         return false;
     }
 
-    public function disable(\App\Model\Entity\Employee &$employee, $end): bool {
+    public function disable(\App\Model\Entity\Employee &$employee, $end): bool
+    {
         $employee->state = 'INACTIVO';
-        if (is_a($employee->last_employee_record, "App\\Model\\Entity\\EmployeeRecord")) {
+        if (is_a($employee->last_employee_record, 'App\\Model\\Entity\\EmployeeRecord')) {
             $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->get('id'));
         }
         $employeeRecord->end = new FrozenDate($end);
@@ -168,6 +174,7 @@ class EmployeesTable extends Table
         if ($this->save($employee)) {
             return true;
         }
+
         return false;
     }
 }

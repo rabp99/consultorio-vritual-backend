@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Test\Fixture;
 
+use Cake\I18n\FrozenDate;
 use Cake\TestSuite\Fixture\TestFixture;
 use Faker\Factory;
-use Cake\I18n\FrozenDate;
 
 /**
  * RecipesFixture
@@ -13,11 +13,12 @@ use Cake\I18n\FrozenDate;
 class RecipesFixture extends TestFixture
 {
     public $import = ['table' => 'recipes'];
-    
-    public function init(): void {
-        $faker = Factory::create("es_PE");
+
+    public function init(): void
+    {
+        $faker = Factory::create('es_PE');
         $this->records = [];
-        
+
         for ($i = 0; $i < 200; $i++) {
             $this->records[] = [
                 'appointment_id' => $faker->numberBetween(31, 60),
@@ -28,7 +29,7 @@ class RecipesFixture extends TestFixture
                 'created' => FrozenDate::now(),
             ];
         }
-        
+
         parent::init();
     }
 }

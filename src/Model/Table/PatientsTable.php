@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -24,7 +22,6 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Patient[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Patient[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Patient[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class PatientsTable extends Table
@@ -44,12 +41,12 @@ class PatientsTable extends Table
         $this->setPrimaryKey(['person_doc_type', 'person_doc_num']);
 
         $this->addBehavior('Timestamp');
-        
+
         $this->belongsTo('PatientPerson')
             ->setForeignKey(['person_doc_type', 'person_doc_num'])
             ->setJoinType('INNER')
             ->setClassName('People');
-        
+
         $this->belongsTo('People')
             ->setForeignKey(['person_doc_type', 'person_doc_num'])
             ->setJoinType('INNER');
@@ -61,7 +58,8 @@ class PatientsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator {
+    public function validationDefault(Validator $validator): Validator
+    {
         $validator
             ->scalar('person_doc_type')
             ->allowEmptyString('person_doc_type', null, 'create');
@@ -78,21 +76,24 @@ class PatientsTable extends Table
 
         return $validator;
     }
-    
-    
-    public function enable(\App\Model\Entity\Patient &$patient): bool {
+
+    public function enable(\App\Model\Entity\Patient &$patient): bool
+    {
         $patient->state = 'ACTIVO';
         if ($this->save($patient)) {
             return true;
         }
+
         return false;
     }
 
-    public function disable(\App\Model\Entity\Patient &$patient): bool {
+    public function disable(\App\Model\Entity\Patient &$patient): bool
+    {
         $patient->state = 'INACTIVO';
         if ($this->save($patient)) {
             return true;
         }
+
         return false;
     }
 }

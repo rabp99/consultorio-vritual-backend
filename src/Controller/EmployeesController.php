@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 /**
  * Employees Controller
  *
@@ -17,10 +16,11 @@ class EmployeesController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index() {
-        $this->getRequest()->allowMethod("GET");
-        $sortColumn = $this->getRequest()->getQuery("sort_column");
-        $sortOrder = $this->getRequest()->getQuery("sort_order");
+    public function index()
+    {
+        $this->getRequest()->allowMethod('GET');
+        $sortColumn = $this->getRequest()->getQuery('sort_column');
+        $sortOrder = $this->getRequest()->getQuery('sort_order');
         $personDocType = $this->getRequest()->getQuery('person_doc_type') ?
             explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
@@ -30,32 +30,32 @@ class EmployeesController extends AppController
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
-       
+
         $query = $this->Employees->find()
             ->contain(['People']);
-        
+
         if ($sortColumn && $sortOrder) {
-            if ($sortColumn === "Employees.person_doc_num") {
+            if ($sortColumn === 'Employees.person_doc_num') {
                 $query->order([
-                    "Employees.person_doc_type" => $sortOrder,
-                    "Employees.person_doc_num" => $sortOrder,
+                    'Employees.person_doc_type' => $sortOrder,
+                    'Employees.person_doc_num' => $sortOrder,
                 ]);
             } else {
                 $query->order([$sortColumn => $sortOrder]);
             }
         }
-        
-        // filters    
+
+        // filters
         if ($personDocType) {
-           $query->where(['Employees.person_doc_type IN' => $personDocType]);
+            $query->where(['Employees.person_doc_type IN' => $personDocType]);
         }
-    
+
         if ($personDocNum) {
-           $query->where(['Employees.person_doc_num LIKE' => "%$personDocNum%"]);
+            $query->where(['Employees.person_doc_num LIKE' => "%$personDocNum%"]);
         }
-    
+
         if ($personFullName) {
-           $query->where(["OR" => [
+            $query->where(['OR' => [
                 ['People.names LIKE' => "%$personFullName%"],
                 ['People.last_name1 LIKE' => "%$personFullName%"],
                 ['People.last_name2 LIKE' => "%$personFullName%"],
@@ -64,29 +64,29 @@ class EmployeesController extends AppController
                 ["CONCAT(People.names, ' ', People.last_name1, ', ', People.last_name2) LIKE" => "%$personFullName%"],
             ]]);
         }
-    
+
         if ($cmp) {
-           $query->where(['Employees.cmp LIKE' => "%$cmp%"]);
+            $query->where(['Employees.cmp LIKE' => "%$cmp%"]);
         }
-    
+
         if ($state) {
-           $query->where(['Employees.state IN' => $state]);
+            $query->where(['Employees.state IN' => $state]);
         }
 
         $count = $query->count();
         if (!$itemsPerPage) {
             $itemsPerPage = $count;
         }
-        
+
         $employees = $this->paginate($query, [
-            'limit' => $itemsPerPage
+            'limit' => $itemsPerPage,
         ]);
         $paginate = $this->request->getAttribute('paging')['Employees'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage']
+            'itemsPerPage' =>  $paginate['perPage'],
         ];
-        
+
         $this->set(compact('employees', 'pagination', 'count'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -97,9 +97,10 @@ class EmployeesController extends AppController
      * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function view() {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function view()
+    {
+        $this->getRequest()->allowMethod('GET');
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $employee = $this->Employees->get([$personDocType, $personDocNum], [
@@ -115,11 +116,12 @@ class EmployeesController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-        $this->getRequest()->allowMethod("POST");
+    public function add()
+    {
+        $this->getRequest()->allowMethod('POST');
         $employee = $this->Employees->newEntity($this->getRequest()->getData());
         $errors = null;
-        
+
         try {
             $this->Employees->getConnection()->begin();
             $this->Employees->saveOrFail($employee);
@@ -143,12 +145,14 @@ class EmployeesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit() {
-        $this->getRequest()->allowMethod("PUT");
+    public function edit()
+    {
+        $this->getRequest()->allowMethod('PUT');
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $employee = $this->Employees->patchEntity(
-            $this->Employees->get([$personDocType, $personDocNum]), $this->request->getData()
+            $this->Employees->get([$personDocType, $personDocNum]),
+            $this->request->getData()
         );
         $errors = null;
 
@@ -159,7 +163,7 @@ class EmployeesController extends AppController
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('employee', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -171,14 +175,15 @@ class EmployeesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function enable() {
+    public function enable()
+    {
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $start = $this->getRequest()->getData('start');
         $employee = $this->Employees->get([$personDocType, $personDocNum], ['contain' => ['LastEmployeeRecord']]);
         $errors = null;
-        
+
         if ($this->Employees->enable($employee, $start)) {
             $message = __('El médico fue habilitado correctamente');
         } else {
@@ -197,14 +202,15 @@ class EmployeesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function disable() {
+    public function disable()
+    {
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $end = $this->getRequest()->getData('end');
         $employee = $this->Employees->get([$personDocType, $personDocNum], ['contain' => ['LastEmployeeRecord']]);
         $errors = null;
-        
+
         if ($this->Employees->disable($employee, $end)) {
             $message = __('El médico fue deshabilitado correctamente');
         } else {

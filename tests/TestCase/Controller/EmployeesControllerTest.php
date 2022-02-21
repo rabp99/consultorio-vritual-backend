@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\EmployeesController;
-use Cake\TestSuite\IntegrationTestTrait;
-use Cake\TestSuite\TestCase;
 use Cake\I18n\FrozenDate;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\EmployeesController Test Case
@@ -17,36 +16,39 @@ use Cake\ORM\TableRegistry;
 class EmployeesControllerTest extends TestCase
 {
     use IntegrationTestTrait;
+
     private $peopleTable;
     private $employeesTable;
     private $employeeRecordsTable;
-    
-    public function getFixtures(): array {
+
+    public function getFixtures(): array
+    {
         $this->addFixture('app.People')
             ->addFixture('app.Employees')
             ->addFixture('app.EmployeeRecords')
             ->addFixture('app.Users');
-        
+
         return parent::getFixtures();
     }
-    
-    public function setUp(): void {
+
+    public function setUp(): void
+    {
         parent::setUp();
         $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
+            'headers' => ['Accept' => 'application/json'],
         ]);
         $data = [
-            "username" => "70801887",
-            "password" => "70801887"
+            'username' => '70801887',
+            'password' => '70801887',
         ];
         $this->post('/api/users/login.json', $data);
-        $token = json_decode((string)$this->_response->getBody(), true)["token"];
+        $token = json_decode((string)$this->_response->getBody(), true)['token'];
         $this->configRequest([
             'headers' => [
-                'Authorization' => "Bearer $token"
-            ]
+                'Authorization' => "Bearer $token",
+            ],
         ]);
-        
+
         $this->peopleTable = TableRegistry::getTableLocator()->get('People');
         $this->employeesTable = TableRegistry::getTableLocator()->get('Employees');
         $this->employeeRecordsTable = TableRegistry::getTableLocator()->get('EmployeeRecords');
@@ -57,41 +59,45 @@ class EmployeesControllerTest extends TestCase
      *
      * @return void
      */
-    public function testIndex(): void {
+    public function testIndex(): void
+    {
         $this->get('/api/employees.json');
         $this->assertResponseOk();
-        $this->assertResponseContains("\"count\": 11");
+        $this->assertResponseContains('"count": 11');
     }
-    
+
     /**
      * Test index with filters method
      *
      * @return void
      */
-    public function testIndexWithFilters(): void {
+    public function testIndexWithFilters(): void
+    {
         $this->get('/api/employees.json?state=ACTIVO&person_doc_type=DNI');
         $this->assertResponseOk();
-        $this->assertResponseContains("\"count\": 5");
+        $this->assertResponseContains('"count": 5');
     }
-    
+
     /**
      * Test View method
      *
      * @return void
      */
-    public function testView(): void {
+    public function testView(): void
+    {
         $this->get('/api/employees/DNI/11111111.json');
         $this->assertResponseOk();
         $this->assertResponseContains("\"person\": {\n");
-        $this->assertResponseContains("\"doc_num\": \"11111111\"");
+        $this->assertResponseContains('"doc_num": "11111111"');
     }
-    
+
     /**
      * Test add clean method
      *
      * @return void
      */
-    public function testAddClean(): void {
+    public function testAddClean(): void
+    {
         $countPeopleBefore = $this->peopleTable->find()->count();
         $countEmployeesBefore = $this->employeesTable->find()->count();
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
@@ -100,7 +106,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_num' => '70801887',
             ])
             ->count();
-        
+
         $data = [
             'cmp' => '450847',
             'state' => 'ACTIVO',
@@ -116,13 +122,13 @@ class EmployeesControllerTest extends TestCase
             ],
             'employee_records' => [
                 [
-                    'start' => FrozenDate::now()
-                ]
-            ]
+                    'start' => FrozenDate::now(),
+                ],
+            ],
         ];
-        
+
         $this->post('/api/employees.json', $data);
-        
+
         $countPeopleAfter = $this->peopleTable->find()->count();
         $countEmployeesAfter = $this->employeesTable->find()->count();
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
@@ -131,20 +137,21 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_num' => '70801887',
             ])
             ->count();
-                
+
         $this->assertResponseOk();
         $this->assertResponseContains("\"message\": \"El m\u00e9dico fue registrado correctamente\"");
         $this->assertEquals($countPeopleBefore + 1, $countPeopleAfter);
         $this->assertEquals($countEmployeesBefore + 1, $countEmployeesAfter);
         $this->assertEquals($countEmployeeRecordsBefore + 1, $countEmployeeRecordsAfter);
     }
-        
+
     /**
      * Test add with person repeated method
      *
      * @return void
      */
-    public function testAddWithPersonRepeated(): void {
+    public function testAddWithPersonRepeated(): void
+    {
         $countPeopleBefore = $this->peopleTable->find()->count();
         $countEmployeesBefore = $this->employeesTable->find()->count();
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
@@ -153,7 +160,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_num' => '99999999',
             ])
             ->count();
-        
+
         $data = [
             'cmp' => '450847',
             'created' => FrozenDate::now(),
@@ -171,13 +178,13 @@ class EmployeesControllerTest extends TestCase
             ],
             'employee_records' => [
                 [
-                    'start' => FrozenDate::now()
-                ]
-            ]
+                    'start' => FrozenDate::now(),
+                ],
+            ],
         ];
 
         $this->post('/api/employees.json', $data);
-        
+
         $countPeopleAfter = $this->peopleTable->find()->count();
         $countEmployeesAfter = $this->employeesTable->find()->count();
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
@@ -186,20 +193,21 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_num' => '99999999',
             ])
             ->count();
-        
+
         $this->assertResponseOk();
         $this->assertResponseContains("\"message\": \"El m\u00e9dico fue registrado correctamente\"");
         $this->assertEquals($countPeopleBefore, $countPeopleAfter);
         $this->assertEquals($countEmployeesBefore + 1, $countEmployeesAfter);
         $this->assertEquals($countEmployeeRecordsBefore + 1, $countEmployeeRecordsAfter);
     }
-    
+
     /**
      * Test add with person and employee repeated method
      *
      * @return void
      */
-    public function testAddWithPersonAndEmployeeRepeated(): void {
+    public function testAddWithPersonAndEmployeeRepeated(): void
+    {
         $countPeopleBefore = $this->peopleTable->find()->count();
         $countEmployeesBefore = $this->employeesTable->find()->count();
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
@@ -209,7 +217,7 @@ class EmployeesControllerTest extends TestCase
             ])
             ->count();
         $personBefore = $this->peopleTable->get(['DNI', '11111111']);
-        
+
         $data = [
             'cmp' => '450847',
             'created' => FrozenDate::now(),
@@ -227,13 +235,13 @@ class EmployeesControllerTest extends TestCase
             ],
             'employee_records' => [
                 [
-                    'start' => FrozenDate::now()
-                ]
-            ]
+                    'start' => FrozenDate::now(),
+                ],
+            ],
         ];
-        
+
         $this->post('/api/employees.json', $data);
-        
+
         $countPeopleAfter = $this->peopleTable->find()->count();
         $countEmployeesAfter = $this->employeesTable->find()->count();
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
@@ -243,7 +251,7 @@ class EmployeesControllerTest extends TestCase
             ])
             ->count();
         $personAfter = $this->peopleTable->get(['DNI', '11111111']);
-        
+
         $this->assertResponseFailure();
         $this->assertResponseContains("\"message\": \"El m\u00e9dico no fue registrado correctamente\"");
         $this->assertEquals($countPeopleBefore, $countPeopleAfter);
@@ -252,13 +260,14 @@ class EmployeesControllerTest extends TestCase
         $this->assertEquals($personBefore->names, $personAfter->names);
         $this->assertNotEquals($personAfter->names, 'Roberto');
     }
-     
+
     /**
      * Test edit clean method
      *
      * @return void
      */
-    public function testEditClean(): void {
+    public function testEditClean(): void
+    {
         $countPeopleBefore = $this->peopleTable->find()->count();
         $countEmployeesBefore = $this->employeesTable->find()->count();
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
@@ -268,7 +277,7 @@ class EmployeesControllerTest extends TestCase
             ])
             ->count();
         $employeeBefore = $this->employeesTable->get(['DNI', '22222222'], ['contain' => ['People']]);
-                
+
         $data = [
             'cmp' => '978546',
             'person' => [
@@ -280,11 +289,11 @@ class EmployeesControllerTest extends TestCase
                 'birth' => FrozenDate::now(),
                 'nationality' => 'PERÚ',
                 'gendre' => 'M',
-            ]
+            ],
         ];
-        
+
         $this->put('/api/employees/update/DNI/22222222.json', $data);
-        
+
         $countPeopleAfter = $this->peopleTable->find()->count();
         $countEmployeesAfter = $this->employeesTable->find()->count();
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
@@ -294,7 +303,7 @@ class EmployeesControllerTest extends TestCase
             ])
             ->count();
         $employeeAfter = $this->employeesTable->get(['DNI', '22222222'], ['contain' => ['People']]);
-                
+
         $this->assertResponseOk();
         $this->assertResponseContains("\"message\": \"El m\u00e9dico fue modificado correctamente\"");
         $this->assertEquals($countPeopleBefore, $countPeopleAfter);
@@ -305,37 +314,38 @@ class EmployeesControllerTest extends TestCase
         $this->assertNotEquals($employeeBefore->cmp, $employeeAfter->cmp);
         $this->assertEquals($employeeAfter->cmp, '978546');
     }
-    
+
     /**
      * Test enable method
      *
      * @return void
      */
-    public function testEnable(): void {
+    public function testEnable(): void
+    {
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
             ->count();
-        
+
         $lastEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeBefore = $this->employeesTable->get(['DNI', '12345678'])->state;
-        
+
         $data = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '12345678',
-            'start' => FrozenDate::now()->modify('+ 2days')
+            'start' => FrozenDate::now()->modify('+ 2days'),
         ];
-        
+
         $this->post('/api/employees/enable.json', $data);
-        
+
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -347,7 +357,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeAfter = $this->employeesTable->get(['DNI', '12345678'])->state;
 
@@ -359,37 +369,38 @@ class EmployeesControllerTest extends TestCase
         $this->assertEquals($stateEmployeeBefore, 'INACTIVO');
         $this->assertEquals($stateEmployeeAfter, 'ACTIVO');
     }
-    
+
     /**
      * Test enable with start out of date method
      *
      * @return void
      */
-    public function testEnableWithStartOutOfDate(): void {
+    public function testEnableWithStartOutOfDate(): void
+    {
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
             ->count();
-        
+
         $lastEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeBefore = $this->employeesTable->get(['DNI', '12345678'])->state;
-        
+
         $data = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '12345678',
-            'start' => FrozenDate::now()->modify('- 2days')
+            'start' => FrozenDate::now()->modify('- 2days'),
         ];
-        
+
         $this->post('/api/employees/enable.json', $data);
-        
+
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -401,7 +412,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '12345678',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeAfter = $this->employeesTable->get(['DNI', '12345678'])->state;
 
@@ -413,13 +424,14 @@ class EmployeesControllerTest extends TestCase
         $this->assertEquals($stateEmployeeBefore, 'INACTIVO');
         $this->assertEquals($stateEmployeeAfter, 'INACTIVO');
     }
-    
+
     /**
      * Test disable method
      *
      * @return void
      */
-    public function testDisable(): void {
+    public function testDisable(): void
+    {
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -431,18 +443,18 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '11111111',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeBefore = $this->employeesTable->get(['DNI', '11111111'])->state;
-        
+
         $data = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '11111111',
-            'end' => FrozenDate::now()->modify('+ 2days')
+            'end' => FrozenDate::now()->modify('+ 2days'),
         ];
-        
+
         $this->post('/api/employees/disable.json', $data);
-        
+
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -454,7 +466,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '11111111',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeAfter = $this->employeesTable->get(['DNI', '11111111'])->state;
 
@@ -466,13 +478,14 @@ class EmployeesControllerTest extends TestCase
         $this->assertEquals($stateEmployeeBefore, 'ACTIVO');
         $this->assertEquals($stateEmployeeAfter, 'INACTIVO');
     }
-    
+
     /**
      * Test disable with start out of date method
      *
      * @return void
      */
-    public function testDisableWithStartOutOfDate(): void {
+    public function testDisableWithStartOutOfDate(): void
+    {
         $countEmployeeRecordsBefore = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -484,18 +497,18 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '11111111',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeBefore = $this->employeesTable->get(['DNI', '11111111'])->state;
-        
+
         $data = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '11111111',
-            'end' => FrozenDate::now()->modify('- 2days')
+            'end' => FrozenDate::now()->modify('- 2days'),
         ];
-        
+
         $this->post('/api/employees/disable.json', $data);
-        
+
         $countEmployeeRecordsAfter = $this->employeeRecordsTable->find()
             ->where([
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
@@ -507,7 +520,7 @@ class EmployeesControllerTest extends TestCase
                 'EmployeeRecords.employee_person_doc_type' => 'DNI',
                 'EmployeeRecords.employee_person_doc_num' => '11111111',
             ])
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->first();
         $stateEmployeeAfter = $this->employeesTable->get(['DNI', '11111111'])->state;
 

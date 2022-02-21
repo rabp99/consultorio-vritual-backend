@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Test\Fixture;
 
+use Cake\I18n\FrozenDate;
 use Cake\TestSuite\Fixture\TestFixture;
 use Faker\Factory;
-use Cake\I18n\FrozenDate;
 
 /**
  * AppointmentsFixture
@@ -13,11 +13,12 @@ use Cake\I18n\FrozenDate;
 class AppointmentsFixture extends TestFixture
 {
     public $import = ['table' => 'appointments'];
-    
-    public function init(): void {
-        $faker = Factory::create("es_PE");
+
+    public function init(): void
+    {
+        $faker = Factory::create('es_PE');
         $this->records = [];
-        
+
         for ($i = 0; $i < 30; $i++) {
             $appointment_date = $faker->dateTimeBetween(FrozenDate::now(), FrozenDate::now()->modify('+2 month'));
             $this->records[] = [
@@ -29,10 +30,10 @@ class AppointmentsFixture extends TestFixture
                 'appointment_date' => $appointment_date,
                 'cost' => $faker->numberBetween(1, 100) * 10,
                 'state' => 'PENDIENTE',
-                'user_created' => '70801887'
+                'user_created' => '70801887',
             ];
         }
-        
+
         for ($i = 0; $i < 30; $i++) {
             $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month'), FrozenDate::now());
             $this->records[] = [
@@ -44,10 +45,10 @@ class AppointmentsFixture extends TestFixture
                 'appointment_date' => $appointment_date,
                 'cost' => $faker->numberBetween(1, 100) * 10,
                 'state' => 'TERMINADA',
-                'user_created' => '70801887'
+                'user_created' => '70801887',
             ];
         }
-        
+
         for ($i = 0; $i < 30; $i++) {
             $appointment_date = $faker->dateTimeBetween(FrozenDate::now(), FrozenDate::now()->modify('+2 month'));
             $this->records[] = [
@@ -59,10 +60,10 @@ class AppointmentsFixture extends TestFixture
                 'appointment_date' => $appointment_date,
                 'cost' => $faker->numberBetween(1, 100) * 10,
                 'state' => 'REPROGRAMADA',
-                'user_created' => '70801887'
+                'user_created' => '70801887',
             ];
         }
-        
+
         for ($i = 0; $i < 30; $i++) {
             $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-2 month'), FrozenDate::now()->modify('+1 month'));
             $cancel_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month'), FrozenDate::now());
@@ -76,10 +77,10 @@ class AppointmentsFixture extends TestFixture
                 'cancel_date' => $cancel_date,
                 'cost' => $faker->numberBetween(1, 100) * 10,
                 'state' => 'CANCELADA',
-                'user_created' => '70801887'
+                'user_created' => '70801887',
             ];
         }
-            
+
         parent::init();
     }
 }

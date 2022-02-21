@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -13,7 +12,6 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\PlacesTable&\Cake\ORM\Association\BelongsTo $Places
  * @property \App\Model\Table\AppointmentsTable&\Cake\ORM\Association\HasMany $Appointments
- *
  * @method \App\Model\Entity\ConsultingRoom newEmptyEntity()
  * @method \App\Model\Entity\ConsultingRoom newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\ConsultingRoom[] newEntities(array $data, array $options = [])
@@ -27,7 +25,6 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\ConsultingRoom[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\ConsultingRoom[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\ConsultingRoom[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class ConsultingRoomsTable extends Table

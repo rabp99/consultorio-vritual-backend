@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 /**
  * Patients Controller
  *
@@ -17,11 +16,12 @@ class PatientsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index() {
-        $this->getRequest()->allowMethod("GET");
-        $sortColumn = $this->getRequest()->getQuery("sort_column");
-        $sortOrder = $this->getRequest()->getQuery("sort_order");
-        $personDocType = $this->getRequest()->getQuery('person_doc_type') ? 
+    public function index()
+    {
+        $this->getRequest()->allowMethod('GET');
+        $sortColumn = $this->getRequest()->getQuery('sort_column');
+        $sortOrder = $this->getRequest()->getQuery('sort_order');
+        $personDocType = $this->getRequest()->getQuery('person_doc_type') ?
             explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
         $personFullName = $this->getRequest()->getQuery('person_full_name');
@@ -29,25 +29,25 @@ class PatientsController extends AppController
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
-       
+
         $query = $this->Patients->find()
             ->contain('People');
-        
+
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters        
+
+        // filters
         if ($personDocType) {
-           $query->where(['Patients.person_doc_type IN' => $personDocType]);
+            $query->where(['Patients.person_doc_type IN' => $personDocType]);
         }
-    
+
         if ($personDocNum) {
-           $query->where(['Patients.person_doc_num LIKE' => "%$personDocNum%"]);
+            $query->where(['Patients.person_doc_num LIKE' => "%$personDocNum%"]);
         }
-    
+
         if ($personFullName) {
-           $query->where(["OR" => [
+            $query->where(['OR' => [
                 ['People.names LIKE' => "%$personFullName%"],
                 ['People.last_name1 LIKE' => "%$personFullName%"],
                 ['People.last_name2 LIKE' => "%$personFullName%"],
@@ -56,25 +56,25 @@ class PatientsController extends AppController
                 ["CONCAT(People.names, ' ', People.last_name1, ', ', People.last_name2) LIKE" => "%$personFullName%"],
             ]]);
         }
-    
+
         if ($state) {
-           $query->where(['Patients.state IN' => $state]);
+            $query->where(['Patients.state IN' => $state]);
         }
 
         $count = $query->count();
         if (!$itemsPerPage) {
             $itemsPerPage = $count;
         }
-        
+
         $patients = $this->paginate($query, [
-            'limit' => $itemsPerPage
+            'limit' => $itemsPerPage,
         ]);
         $paginate = $this->request->getAttribute('paging')['Patients'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage']
+            'itemsPerPage' =>  $paginate['perPage'],
         ];
-        
+
         $this->set(compact('patients', 'pagination', 'count'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -85,9 +85,10 @@ class PatientsController extends AppController
      * @param string|null $id Patient id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function view() {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function view()
+    {
+        $this->getRequest()->allowMethod('GET');
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum], [
@@ -103,11 +104,12 @@ class PatientsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-        $this->getRequest()->allowMethod("POST");
+    public function add()
+    {
+        $this->getRequest()->allowMethod('POST');
         $patient = $this->Patients->newEntity($this->getRequest()->getData());
         $errors = null;
-                
+
         try {
             $this->Patients->getConnection()->begin();
             $this->Patients->saveOrFail($patient);
@@ -131,15 +133,17 @@ class PatientsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
-        $this->getRequest()->allowMethod("PUT");
+    public function edit($id = null)
+    {
+        $this->getRequest()->allowMethod('PUT');
         $personDocType = $this->getRequest()->getParam('person_doc_type');
         $personDocNum = $this->getRequest()->getParam('person_doc_num');
         $patient = $this->Patients->patchEntity(
-            $this->Patients->get([$personDocType, $personDocNum]), $this->request->getData()
+            $this->Patients->get([$personDocType, $personDocNum]),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if ($this->Patients->save($patient)) {
             $message = __('El paciente fue modificado correctamente');
         } else {
@@ -147,7 +151,7 @@ class PatientsController extends AppController
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('patient', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -159,13 +163,14 @@ class PatientsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function enable() {
+    public function enable()
+    {
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum]);
         $errors = null;
-        
+
         if ($this->Patients->enable($patient)) {
             $message = __('El paciente fue habilitado correctamente');
         } else {
@@ -184,13 +189,14 @@ class PatientsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function disable() {
+    public function disable()
+    {
         $this->getRequest()->allowMethod(['POST']);
         $personDocType = $this->getRequest()->getData('person_doc_type');
         $personDocNum = $this->getRequest()->getData('person_doc_num');
         $patient = $this->Patients->get([$personDocType, $personDocNum]);
         $errors = null;
-        
+
         if ($this->Patients->disable($patient)) {
             $message = __('El paciente fue deshabilitado correctamente');
         } else {

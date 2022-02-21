@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Firebase\JWT\JWT;
 use Cake\Event\EventInterface;
-
+use Firebase\JWT\JWT;
 
 /**
  * Users Controller
@@ -15,20 +14,23 @@ use Cake\Event\EventInterface;
  */
 class UsersController extends AppController
 {
-    public function beforeFilter(EventInterface $event) {
+    public function beforeFilter(EventInterface $event)
+    {
         parent::beforeFilter($event);
 
         $this->Authentication->allowUnauthenticated(['login']);
     }
+
     /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index() {
-        $this->getRequest()->allowMethod("GET");
-        $sortColumn = $this->getRequest()->getQuery("sort_column");
-        $sortOrder = $this->getRequest()->getQuery("sort_order");
+    public function index()
+    {
+        $this->getRequest()->allowMethod('GET');
+        $sortColumn = $this->getRequest()->getQuery('sort_column');
+        $sortOrder = $this->getRequest()->getQuery('sort_order');
         $id = $this->getRequest()->getQuery('id');
         $username = $this->getRequest()->getQuery('username');
         $email = $this->getRequest()->getQuery('email');
@@ -39,60 +41,60 @@ class UsersController extends AppController
         $state = $this->getRequest()->getQuery('state');
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
-       
+
         $query = $this->Users->find();
-        
+
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters    
+
+        // filters
         if ($id) {
-           $query->where(['Users.id' => $id]);
+            $query->where(['Users.id' => $id]);
         }
-    
+
         if ($username) {
-           $query->where(['Users.username' => $username]);
+            $query->where(['Users.username' => $username]);
         }
-    
+
         if ($email) {
-           $query->where(['Users.email' => $email]);
+            $query->where(['Users.email' => $email]);
         }
-    
+
         if ($password) {
-           $query->where(['Users.password' => $password]);
+            $query->where(['Users.password' => $password]);
         }
-    
+
         if ($rol) {
-           $query->where(['Users.rol' => $rol]);
+            $query->where(['Users.rol' => $rol]);
         }
-    
+
         if ($employeePersonDocType) {
-           $query->where(['Users.employee_person_doc_type' => $employeePersonDocType]);
+            $query->where(['Users.employee_person_doc_type' => $employeePersonDocType]);
         }
-    
+
         if ($employeePersonDocNum) {
-           $query->where(['Users.employee_person_doc_num' => $employeePersonDocNum]);
+            $query->where(['Users.employee_person_doc_num' => $employeePersonDocNum]);
         }
-    
+
         if ($state) {
-           $query->where(['Users.state' => $state]);
+            $query->where(['Users.state' => $state]);
         }
 
         $count = $query->count();
         if (!$itemsPerPage) {
             $itemsPerPage = $count;
         }
-        
+
         $users = $this->paginate($query, [
-            'limit' => $itemsPerPage
+            'limit' => $itemsPerPage,
         ]);
         $paginate = $this->request->getAttribute('paging')['Users'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage']
+            'itemsPerPage' => $paginate['perPage'],
         ];
-        
+
         $this->set(compact('users', 'pagination', 'count'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -103,9 +105,10 @@ class UsersController extends AppController
      * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function view($id = null) {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function view($id = null)
+    {
+        $this->getRequest()->allowMethod('GET');
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
@@ -119,20 +122,20 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-        $this->getRequest()->allowMethod("POST");
+    public function add()
+    {
+        $this->getRequest()->allowMethod('POST');
         $user = $this->Users->newEntity($this->getRequest()->getData());
         $errors = null;
-        
+
         if ($this->Users->save($user)) {
             $message = __('El user fue registrado correctamente');
-        }
-        else {
+        } else {
             $message = __('El user no fue registrado correctamente');
             $errors = $user->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('user', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -144,13 +147,15 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
-        $this->getRequest()->allowMethod("PUT");
+    public function edit($id = null)
+    {
+        $this->getRequest()->allowMethod('PUT');
         $user = $this->Users->patchEntity(
-            $this->Users->get($id), $this->request->getData()
+            $this->Users->get($id),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if ($this->Users->save($user)) {
             $message = __('El user fue modificado correctamente');
         } else {
@@ -158,7 +163,7 @@ class UsersController extends AppController
             $errors = $user->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('user', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -166,17 +171,17 @@ class UsersController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function enable() {
+    public function enable()
+    {
         $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData("id");
+        $id = $this->getRequest()->getData('id');
         $user = $this->Users->get($id);
         $user->state = 1;
         $errors = null;
-        
+
         if ($this->Users->save($user)) {
             $message = __('El user fue habilitado correctamente');
         } else {
@@ -195,13 +200,14 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function disable() {
+    public function disable()
+    {
         $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData("id");
+        $id = $this->getRequest()->getData('id');
         $user = $this->Users->get($id);
         $user->state = 2;
         $errors = null;
-        
+
         if ($this->Users->save($user)) {
             $message = __('El user fue deshabilitado correctamente');
         } else {
@@ -218,22 +224,23 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function login() {
+    public function login()
+    {
         $result = $this->Authentication->getResult();
-        
+
         if ($result->isValid() && defined('CONFIG')) {
             $privateKey = file_get_contents(CONFIG . DS . 'jwt.key');
-            $username = $result->getData()["username"];
+            $username = $result->getData()['username'];
             $user = $this->Users->get($username);
-            
+
             $payload = [
                 'iss' => 'consultorio_virtual',
                 'sub' => $user->username,
                 'exp' => time() + 604800,
-            ];          
+            ];
             $json = [
                 'token' => JWT::encode($payload, $privateKey, 'RS256'),
-                'user' => $user
+                'user' => $user,
             ];
         } else {
             $this->response = $this->response->withStatus(401);
@@ -242,17 +249,19 @@ class UsersController extends AppController
         $this->set(compact('json'));
         $this->viewBuilder()->setOption('serialize', 'json');
     }
+
     /**
      * Change Password method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function changePassword() {
+    public function changePassword()
+    {
         $result = $this->Authentication->getResult();
-        $user_id = $result->getData()["id"];
+        $user_id = $result->getData()['id'];
         $newPassword = $this->request->getData('new_password');
         $user = $this->Users->get($user_id);
-        
+
         $user->password = $newPassword;
 
         if ($this->Users->save($user)) {
@@ -265,18 +274,20 @@ class UsersController extends AppController
         $this->set(compact('message'));
         $this->viewBuilder()->setOption('serialize', true);
     }
+
     /**
      * Reset Password method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function resetPassword() {
+    public function resetPassword()
+    {
         $this->getRequest()->allowMethod(['POST']);
         $username = $this->getRequest()->getData('username');
         $user = $this->Users->get($username);
         $user->password = $user->username;
         $errors = null;
-        
+
         if ($this->Users->save($user)) {
             $message = __('La contraseña fue restablecida correctamente');
         } else {
@@ -286,4 +297,5 @@ class UsersController extends AppController
         }
         $this->set(compact('user', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
-    }}
+    }
+}

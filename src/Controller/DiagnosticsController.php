@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 /**
  * Diagnostics Controller
  *
@@ -17,57 +16,58 @@ class DiagnosticsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index() {
-        $this->getRequest()->allowMethod("GET");
-        $sortColumn = $this->getRequest()->getQuery("sort_column");
-        $sortOrder = $this->getRequest()->getQuery("sort_order");
+    public function index()
+    {
+        $this->getRequest()->allowMethod('GET');
+        $sortColumn = $this->getRequest()->getQuery('sort_column');
+        $sortOrder = $this->getRequest()->getQuery('sort_order');
         $id = $this->getRequest()->getQuery('id');
         $appointmentId = $this->getRequest()->getQuery('appointment_id');
         $diseaseId = $this->getRequest()->getQuery('disease_id');
         $state = $this->getRequest()->getQuery('state');
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
-       
+
         $query = $this->Diagnostics->find();
-        
+
         if ($sortColumn && $sortOrder) {
             $query->order([$sortColumn => $sortOrder]);
         }
-        
-        // filters    
+
+        // filters
         if ($id) {
-           $query->where(['Diagnostics.id' => $id]);
+            $query->where(['Diagnostics.id' => $id]);
         }
-    
+
         if ($appointmentId) {
-           $query->where(['Diagnostics.appointment_id' => $appointmentId]);
+            $query->where(['Diagnostics.appointment_id' => $appointmentId]);
         }
-    
+
         if ($diseaseId) {
-           $query->where(['Diagnostics.disease_id' => $diseaseId]);
+            $query->where(['Diagnostics.disease_id' => $diseaseId]);
         }
-    
+
         if ($state) {
-           $query->where(['Diagnostics.state' => $state]);
+            $query->where(['Diagnostics.state' => $state]);
         }
 
         $count = $query->count();
         if (!$itemsPerPage) {
             $itemsPerPage = $count;
         }
-        
+
         $this->paginate = [
             'contain' => ['Appointments', 'Diseases'],
         ];
         $diagnostics = $this->paginate($query, [
-            'limit' => $itemsPerPage
+            'limit' => $itemsPerPage,
         ]);
         $paginate = $this->request->getAttribute('paging')['Diagnostics'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage']
+            'itemsPerPage' =>  $paginate['perPage'],
         ];
-        
+
         $this->set(compact('diagnostics', 'pagination', 'count'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -78,9 +78,10 @@ class DiagnosticsController extends AppController
      * @param string|null $id Diagnostic id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */   
-    public function view($id = null) {
-        $this->getRequest()->allowMethod("GET");
+     */
+    public function view($id = null)
+    {
+        $this->getRequest()->allowMethod('GET');
         $diagnostic = $this->Diagnostics->get($id, [
             'contain' => ['Appointments', 'Diseases'],
         ]);
@@ -94,20 +95,20 @@ class DiagnosticsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-        $this->getRequest()->allowMethod("POST");
+    public function add()
+    {
+        $this->getRequest()->allowMethod('POST');
         $diagnostic = $this->Diagnostics->newEntity($this->getRequest()->getData());
         $errors = null;
-        
+
         if ($this->Diagnostics->save($diagnostic)) {
             $message = __('El diagnostic fue registrado correctamente');
-        }
-        else {
+        } else {
             $message = __('El diagnostic no fue registrado correctamente');
             $errors = $diagnostic->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('diagnostic', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -119,13 +120,15 @@ class DiagnosticsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
-        $this->getRequest()->allowMethod("PUT");
+    public function edit($id = null)
+    {
+        $this->getRequest()->allowMethod('PUT');
         $diagnostic = $this->Diagnostics->patchEntity(
-            $this->Diagnostics->get($id), $this->request->getData()
+            $this->Diagnostics->get($id),
+            $this->request->getData()
         );
         $errors = null;
-        
+
         if ($this->Diagnostics->save($diagnostic)) {
             $message = __('El diagnostic fue modificado correctamente');
         } else {
@@ -133,7 +136,7 @@ class DiagnosticsController extends AppController
             $errors = $diagnostic->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        
+
         $this->set(compact('diagnostic', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }
@@ -145,13 +148,14 @@ class DiagnosticsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function enable() {
+    public function enable()
+    {
         $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData("id");
+        $id = $this->getRequest()->getData('id');
         $diagnostic = $this->Diagnostics->get($id);
         $diagnostic->state = 1;
         $errors = null;
-        
+
         if ($this->Diagnostics->save($diagnostic)) {
             $message = __('El diagnostic fue habilitado correctamente');
         } else {
@@ -170,13 +174,14 @@ class DiagnosticsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function disable() {
+    public function disable()
+    {
         $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData("id");
+        $id = $this->getRequest()->getData('id');
         $diagnostic = $this->Diagnostics->get($id);
         $diagnostic->state = 2;
         $errors = null;
-        
+
         if ($this->Diagnostics->save($diagnostic)) {
             $message = __('El diagnostic fue deshabilitado correctamente');
         } else {

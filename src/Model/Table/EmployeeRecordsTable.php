@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -24,7 +23,6 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\EmployeeRecord[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\EmployeeRecord[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\EmployeeRecord[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class EmployeeRecordsTable extends Table
@@ -35,7 +33,8 @@ class EmployeeRecordsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config): void {
+    public function initialize(array $config): void
+    {
         parent::initialize($config);
 
         $this->setTable('employee_records');
@@ -51,11 +50,12 @@ class EmployeeRecordsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator): Validator {
+    public function validationDefault(Validator $validator): Validator
+    {
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
-        
+
         $validator
             ->scalar('employee_person_doc_type')
             ->allowEmptyString('employee_person_doc_type', null, 'create');
@@ -64,7 +64,7 @@ class EmployeeRecordsTable extends Table
             ->scalar('employee_person_doc_num')
             ->maxLength('employee_person_doc_num', 10)
             ->allowEmptyString('employee_person_doc_num', null, 'create');
-        
+
         $validator
             ->date('start')
             ->requirePresence('start', 'create')
@@ -76,10 +76,11 @@ class EmployeeRecordsTable extends Table
 
         return $validator;
     }
-    
-    public function findLast(Query $query, array $options): Query {
+
+    public function findLast(Query $query, array $options): Query
+    {
         return $query
-            ->order(["EmployeeRecords.start" => "DESC"])
+            ->order(['EmployeeRecords.start' => 'DESC'])
             ->limit(1);
     }
 }

@@ -39,7 +39,7 @@ class Recipe extends Entity
         'prescription' => true,
         'created' => true,
         'modified' => true,
-        
+
         'appointment' => true,
         'medicine' => true,
     ];

@@ -33,7 +33,7 @@ class Diagnostic extends Entity
         'disease_id' => true,
         'created' => true,
         'modified' => true,
-        
+
         'appointment' => true,
         'disease' => true,
     ];
