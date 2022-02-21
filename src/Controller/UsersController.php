@@ -221,7 +221,7 @@ class UsersController extends AppController
     public function login() {
         $result = $this->Authentication->getResult();
         
-        if ($result->isValid()) {
+        if ($result->isValid() && defined('CONFIG')) {
             $privateKey = file_get_contents(CONFIG . DS . 'jwt.key');
             $username = $result->getData()["username"];
             $user = $this->Users->get($username);

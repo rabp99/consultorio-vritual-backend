@@ -77,7 +77,7 @@ class EmployeeRecordsTable extends Table
         return $validator;
     }
     
-    public function findLast(Query $query, array $options) {
+    public function findLast(Query $query, array $options): Query {
         return $query
             ->order(["EmployeeRecords.start" => "DESC"])
             ->limit(1);

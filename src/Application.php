@@ -137,6 +137,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface {
         $service = new AuthenticationService();
       
+        //\Cake\Log\Log::write('debug', json_encode(App));
+        
         $fields = [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
@@ -167,11 +169,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $service->loadIdentifier('Authentication.JwtSubject', [
             'tokenField' => "username",
         ]);
-        $service->loadAuthenticator('Authentication.Jwt', [
-            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
-            'returnPayload' => false
-        ]);
+        
+        if (defined('CONFIG')) {
+            $service->loadAuthenticator('Authentication.Jwt', [
+                'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+                'algorithms' => ['RS256'],
+                'returnPayload' => false
+            ]);
+        }
         
         return $service;
     }

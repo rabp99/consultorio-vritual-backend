@@ -147,10 +147,10 @@ class EmployeesTable extends Table
         return $rules;
     }
         
-    public function enable(\App\Model\Entity\Employee &$employee, $start) {
+    public function enable(\App\Model\Entity\Employee &$employee, $start): bool {
         $employee->state = 'ACTIVO';
         $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
-        $lastEmployeeRecord->start = new \Cake\I18n\FrozenDate($start);
+        $lastEmployeeRecord->start = new FrozenDate($start);
         $employee->employee_records = [$lastEmployeeRecord];
         if ($this->save($employee)) {
             return true;
@@ -158,10 +158,12 @@ class EmployeesTable extends Table
         return false;
     }
 
-    public function disable(\App\Model\Entity\Employee &$employee, $end) {
+    public function disable(\App\Model\Entity\Employee &$employee, $end): bool {
         $employee->state = 'INACTIVO';
-        $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->id);
-        $employeeRecord->end = new \Cake\I18n\FrozenDate($end);
+        if (is_a($employee->last_employee_record, "App\\Model\\Entity\\EmployeeRecord")) {
+            $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->get('id'));
+        }
+        $employeeRecord->end = new FrozenDate($end);
         $employee->employee_records = [$employeeRecord];
         if ($this->save($employee)) {
             return true;

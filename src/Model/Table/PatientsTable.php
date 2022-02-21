@@ -80,7 +80,7 @@ class PatientsTable extends Table
     }
     
     
-    public function enable(\App\Model\Entity\Patient &$patient) {
+    public function enable(\App\Model\Entity\Patient &$patient): bool {
         $patient->state = 'ACTIVO';
         if ($this->save($patient)) {
             return true;
@@ -88,7 +88,7 @@ class PatientsTable extends Table
         return false;
     }
 
-    public function disable(\App\Model\Entity\Patient &$patient) {
+    public function disable(\App\Model\Entity\Patient &$patient): bool {
         $patient->state = 'INACTIVO';
         if ($this->save($patient)) {
             return true;

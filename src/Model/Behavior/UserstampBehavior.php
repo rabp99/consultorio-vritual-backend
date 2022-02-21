@@ -14,7 +14,7 @@ use Cake\ORM\Behavior;
  */
 class UserstampBehavior extends Behavior
 {
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options) {
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void {
         if ($entity->isNew()) {
             $entity->set('user_created', '70801887');
         } else {
