@@ -21,11 +21,11 @@ class PatientsController extends AppController
         $this->getRequest()->allowMethod('GET');
         $sortColumn = $this->getRequest()->getQuery('sort_column');
         $sortOrder = $this->getRequest()->getQuery('sort_order');
-        $personDocType = $this->getRequest()->getQuery('person_doc_type') ?
+        $personDocType = is_string($this->getRequest()->getQuery('person_doc_type')) ?
             explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
         $personFullName = $this->getRequest()->getQuery('person_full_name');
-        $state = $this->getRequest()->getQuery('state') ?
+        $state = is_string($this->getRequest()->getQuery('state')) ?
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
@@ -33,7 +33,7 @@ class PatientsController extends AppController
         $query = $this->Patients->find()
             ->contain('People');
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -42,11 +42,11 @@ class PatientsController extends AppController
             $query->where(['Patients.person_doc_type IN' => $personDocType]);
         }
 
-        if ($personDocNum) {
+        if ($personDocNum && is_string($personDocNum)) {
             $query->where(['Patients.person_doc_num LIKE' => "%$personDocNum%"]);
         }
 
-        if ($personFullName) {
+        if ($personFullName && is_string($personFullName)) {
             $query->where(['OR' => [
                 ['People.names LIKE' => "%$personFullName%"],
                 ['People.last_name1 LIKE' => "%$personFullName%"],
@@ -72,7 +72,7 @@ class PatientsController extends AppController
         $paginate = $this->request->getAttribute('paging')['Patients'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('patients', 'pagination', 'count'));
@@ -82,7 +82,6 @@ class PatientsController extends AppController
     /**
      * View method
      *
-     * @param string|null $id Patient id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -109,6 +108,7 @@ class PatientsController extends AppController
         $this->getRequest()->allowMethod('POST');
         $patient = $this->Patients->newEntity($this->getRequest()->getData());
         $errors = null;
+        $message = null;
 
         try {
             $this->Patients->getConnection()->begin();
@@ -159,7 +159,6 @@ class PatientsController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Patient id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -185,7 +184,6 @@ class PatientsController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Patient id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */

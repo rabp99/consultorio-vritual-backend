@@ -49,10 +49,13 @@
         "post-create-project-cmd": "App\\Console\\Installer::postInstall",
         "check": [
             "@test",
-            "@cs-check"
+            "@cs-check",
+            "@psalm",
+            "@stan"
         ],
         "cs-check": "phpcs --colors -p  src/ tests/",
         "cs-fix": "phpcbf --colors -p src/ tests/",
+        "psalm": "psalm",
         "stan": "phpstan analyse",
         "test": "phpunit --colors=always"
     },

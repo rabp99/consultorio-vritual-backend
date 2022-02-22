@@ -150,7 +150,14 @@ class EmployeesTable extends Table
         return $rules;
     }
 
-    public function enable(\App\Model\Entity\Employee &$employee, string $start): bool
+    /**
+     * Enable employee.
+     *
+     * @param \App\Model\Entity\Employee &$employee Employee instance.
+     * @param \Cake\I18n\FrozenDate $start Start Date.
+     * @return bool
+     */
+    public function enable(\App\Model\Entity\Employee &$employee, FrozenDate $start): bool
     {
         $employee->state = 'ACTIVO';
         $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
@@ -163,12 +170,17 @@ class EmployeesTable extends Table
         return false;
     }
 
+    /**
+     * Disable employee.
+     *
+     * @param \App\Model\Entity\Employee &$employee Employee instance.
+     * @param \Cake\I18n\FrozenDate $end End Date.
+     * @return bool
+     */
     public function disable(\App\Model\Entity\Employee &$employee, $end): bool
     {
         $employee->state = 'INACTIVO';
-        if (is_a($employee->last_employee_record, 'App\\Model\\Entity\\EmployeeRecord')) {
-            $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->get('id'));
-        }
+        $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->get('id'));
         $employeeRecord->end = new FrozenDate($end);
         $employee->employee_records = [$employeeRecord];
         if ($this->save($employee)) {

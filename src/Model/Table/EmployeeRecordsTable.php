@@ -77,6 +77,13 @@ class EmployeeRecordsTable extends Table
         return $validator;
     }
 
+    /**
+     * Find Last employee.
+     *
+     * @param \Cake\ORM\Query $query Query instance.
+     * @param array $options Options.
+     * @return \Cake\ORM\Query
+     */
     public function findLast(Query $query, array $options): Query
     {
         return $query

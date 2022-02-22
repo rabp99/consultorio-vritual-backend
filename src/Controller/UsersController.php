@@ -14,10 +14,15 @@ use Firebase\JWT\JWT;
  */
 class UsersController extends AppController
 {
+    /**
+     * Before Filter method when let login to users
+     *
+     * @param \Cake\Event\EventInterface $event Event instance.
+     * @return void
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-
         $this->Authentication->allowUnauthenticated(['login']);
     }
 
@@ -44,7 +49,7 @@ class UsersController extends AppController
 
         $query = $this->Users->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -179,7 +184,7 @@ class UsersController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $user = $this->Users->get($id);
-        $user->state = 1;
+        $user->state = 'ACTIVO';
         $errors = null;
 
         if ($this->Users->save($user)) {
@@ -196,7 +201,6 @@ class UsersController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id User id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -205,7 +209,7 @@ class UsersController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $user = $this->Users->get($id);
-        $user->state = 2;
+        $user->state = 'INACTIVO';
         $errors = null;
 
         if ($this->Users->save($user)) {
@@ -228,8 +232,8 @@ class UsersController extends AppController
     {
         $result = $this->Authentication->getResult();
 
-        if ($result->isValid() && defined('CONFIG')) {
-            $privateKey = file_get_contents(CONFIG . DS . 'jwt.key');
+        $privateKey = defined('CONFIG') ? file_get_contents(CONFIG . DS . 'jwt.key') : '';
+        if ($result->isValid() && is_string($privateKey)) {
             $username = $result->getData()['username'];
             $user = $this->Users->get($username);
 

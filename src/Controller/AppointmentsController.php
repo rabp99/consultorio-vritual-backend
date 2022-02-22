@@ -22,14 +22,14 @@ class AppointmentsController extends AppController
         $sortColumn = $this->getRequest()->getQuery('sort_column');
         $sortOrder = $this->getRequest()->getQuery('sort_order');
         $appointmentDate = $this->getRequest()->getQuery('appointment_date');
-        $state = $this->getRequest()->getQuery('state') ?
+        $state = is_string($this->getRequest()->getQuery('state')) ?
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->Appointments->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -60,7 +60,7 @@ class AppointmentsController extends AppController
         $paginate = $this->request->getAttribute('paging')['Appointments'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('appointments', 'pagination', 'count'));
@@ -113,6 +113,7 @@ class AppointmentsController extends AppController
         $this->getRequest()->allowMethod('POST');
         $appointment = $this->Appointments->newEntity($this->getRequest()->getData());
         $errors = null;
+        $message = null;
 
         try {
             $this->Appointments->getConnection()->begin();
@@ -172,7 +173,6 @@ class AppointmentsController extends AppController
     /**
      * Cancel method
      *
-     * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -204,7 +204,6 @@ class AppointmentsController extends AppController
     /**
      * Undo Cancel method
      *
-     * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -236,7 +235,6 @@ class AppointmentsController extends AppController
     /**
      * Reschedule method
      *
-     * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -271,7 +269,6 @@ class AppointmentsController extends AppController
     /**
      * Attend method
      *
-     * @param string|null $id Appointment id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -300,8 +297,6 @@ class AppointmentsController extends AppController
     /**
      * Get by Patient method
      *
-     * @param string|null patient_person_doc_type Patient doc type.
-     * @param string|null patient_person_doc_num Patient doc num.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */

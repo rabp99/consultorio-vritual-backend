@@ -24,13 +24,14 @@ class DiagnosticsController extends AppController
         $id = $this->getRequest()->getQuery('id');
         $appointmentId = $this->getRequest()->getQuery('appointment_id');
         $diseaseId = $this->getRequest()->getQuery('disease_id');
-        $state = $this->getRequest()->getQuery('state');
+        $state = is_string($this->getRequest()->getQuery('state')) ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->Diagnostics->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -65,7 +66,7 @@ class DiagnosticsController extends AppController
         $paginate = $this->request->getAttribute('paging')['Diagnostics'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('diagnostics', 'pagination', 'count'));
@@ -137,58 +138,6 @@ class DiagnosticsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('diagnostic', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
-    }
-
-    /**
-     * Enable method
-     *
-     * @param string|null $id Diagnostic id.
-     * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function enable()
-    {
-        $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData('id');
-        $diagnostic = $this->Diagnostics->get($id);
-        $diagnostic->state = 1;
-        $errors = null;
-
-        if ($this->Diagnostics->save($diagnostic)) {
-            $message = __('El diagnostic fue habilitado correctamente');
-        } else {
-            $message = __('El diagnostic no fue habilitado correctamente');
-            $errors = $diagnostic->getErrors();
-            $this->setResponse($this->getResponse()->withStatus(500));
-        }
-        $this->set(compact('diagnostic', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
-    }
-
-    /**
-     * Disable method
-     *
-     * @param string|null $id Diagnostic id.
-     * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function disable()
-    {
-        $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData('id');
-        $diagnostic = $this->Diagnostics->get($id);
-        $diagnostic->state = 2;
-        $errors = null;
-
-        if ($this->Diagnostics->save($diagnostic)) {
-            $message = __('El diagnostic fue deshabilitado correctamente');
-        } else {
-            $message = __('El diagnostic no fue deshabilitado correctamente');
-            $errors = $diagnostic->getErrors();
-            $this->setResponse($this->getResponse()->withStatus(500));
-        }
         $this->set(compact('diagnostic', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }

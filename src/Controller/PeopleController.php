@@ -35,7 +35,7 @@ class PeopleController extends AppController
 
         $query = $this->People->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -87,7 +87,7 @@ class PeopleController extends AppController
         $paginate = $this->request->getAttribute('paging')['People'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('people', 'pagination', 'count'));
@@ -97,7 +97,6 @@ class PeopleController extends AppController
     /**
      * View method
      *
-     * @param string|null $id Person id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */

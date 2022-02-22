@@ -9,6 +9,13 @@ use Cake\Console\ConsoleIo;
 
 class DatabaseSeedCommand extends Command
 {
+    /**
+     * Execute method Seed database
+     *
+     * @param \Cake\Console\Arguments $args Arguments instance.
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo instance.
+     * @return void
+     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
         exec('bin\cake migrations seed --seed UsersSeed');

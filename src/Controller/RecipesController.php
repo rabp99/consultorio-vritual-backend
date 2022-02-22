@@ -29,7 +29,7 @@ class RecipesController extends AppController
 
         $query = $this->Recipes->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -132,56 +132,6 @@ class RecipesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('recipe', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
-    }
-
-    /**
-     * Enable method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function enable()
-    {
-        $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData('id');
-        $recipe = $this->Recipes->get($id);
-        $recipe->state = 1;
-        $errors = null;
-
-        if ($this->Recipes->save($recipe)) {
-            $message = __('El recipe fue habilitado correctamente');
-        } else {
-            $message = __('El recipe no fue habilitado correctamente');
-            $errors = $recipe->getErrors();
-            $this->setResponse($this->getResponse()->withStatus(500));
-        }
-        $this->set(compact('recipe', 'message', 'errors'));
-        $this->viewBuilder()->setOption('serialize', true);
-    }
-
-    /**
-     * Disable method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function disable()
-    {
-        $this->getRequest()->allowMethod(['POST']);
-        $id = $this->getRequest()->getData('id');
-        $recipe = $this->Recipes->get($id);
-        $recipe->state = 2;
-        $errors = null;
-
-        if ($this->Recipes->save($recipe)) {
-            $message = __('El recipe fue deshabilitado correctamente');
-        } else {
-            $message = __('El recipe no fue deshabilitado correctamente');
-            $errors = $recipe->getErrors();
-            $this->setResponse($this->getResponse()->withStatus(500));
-        }
         $this->set(compact('recipe', 'message', 'errors'));
         $this->viewBuilder()->setOption('serialize', true);
     }

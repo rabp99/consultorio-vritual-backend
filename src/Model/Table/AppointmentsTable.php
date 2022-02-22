@@ -151,12 +151,24 @@ class AppointmentsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['id']), ['errorField' => 'id']);
-        $rules->add($rules->existsIn(['consulting_room_id'], 'ConsultingRooms'), ['errorField' => 'consulting_room_id']);
+        $rules->add(
+            $rules->existsIn(
+                ['consulting_room_id'],
+                'ConsultingRooms'
+            ),
+            ['errorField' => 'consulting_room_id']
+        );
         $rules->add($rules->existsIn(['user_created'], 'Creator'), ['errorField' => 'user_created']);
 
         return $rules;
     }
 
+    /**
+     * Cancel.
+     *
+     * @param \App\Model\Entity\Appointment &$appointment Appointment instance.
+     * @return bool
+     */
     public function cancel(\App\Model\Entity\Appointment &$appointment): bool
     {
         $appointment->state = self::CANCELADA;
@@ -168,6 +180,12 @@ class AppointmentsTable extends Table
         return false;
     }
 
+    /**
+     * Undo Cancel.
+     *
+     * @param \App\Model\Entity\Appointment &$appointment Appointment instance.
+     * @return bool
+     */
     public function undoCancel(\App\Model\Entity\Appointment &$appointment): bool
     {
         $appointment->state = self::PENDIENTE;
@@ -179,6 +197,12 @@ class AppointmentsTable extends Table
         return false;
     }
 
+    /**
+     * Reschedule.
+     *
+     * @param \App\Model\Entity\Appointment &$appointment Appointment instance.
+     * @return bool
+     */
     public function reschedule(\App\Model\Entity\Appointment &$appointment): bool
     {
         $appointment->setAccess('consulting_room', false);
@@ -190,6 +214,12 @@ class AppointmentsTable extends Table
         return false;
     }
 
+    /**
+     * Attend.
+     *
+     * @param \App\Model\Entity\Appointment &$appointment Appointment instance.
+     * @return bool
+     */
     public function attend(\App\Model\Entity\Appointment &$appointment): bool
     {
         $appointment->state = self::TERMINADA;
@@ -200,6 +230,13 @@ class AppointmentsTable extends Table
         return false;
     }
 
+    /**
+     * Find By Patient.
+     *
+     * @param \Cake\ORM\Query $query Query instance.
+     * @param array $options Options.
+     * @return \Cake\ORM\Query
+     */
     public function findByPatient(Query $query, array $options): Query
     {
         $patient_person_doc_type = $options['patient_person_doc_type'];

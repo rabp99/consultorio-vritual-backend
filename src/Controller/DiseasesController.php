@@ -22,17 +22,18 @@ class DiseasesController extends AppController
         $sortColumn = $this->getRequest()->getQuery('sort_column');
         $sortOrder = $this->getRequest()->getQuery('sort_order');
         $description = $this->getRequest()->getQuery('description');
-        $state = explode(',', $this->getRequest()->getQuery('state'));
+        $state = is_string($this->getRequest()->getQuery('state')) ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->Diseases->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
-        if ($description) {
+        if ($description && is_string($description)) {
             $query->where(['Diseases.description LIKE' => "%$description%"]);
         }
 
@@ -51,7 +52,7 @@ class DiseasesController extends AppController
         $paginate = $this->request->getAttribute('paging')['Diseases'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('diseases', 'pagination', 'count'));
@@ -128,7 +129,6 @@ class DiseasesController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Disease id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -137,7 +137,7 @@ class DiseasesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $disease = $this->Diseases->get($id);
-        $disease->state = 1;
+        $disease->state = 'ACTIVO';
         $errors = null;
 
         if ($this->Diseases->save($disease)) {
@@ -154,7 +154,6 @@ class DiseasesController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Disease id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -163,7 +162,7 @@ class DiseasesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $disease = $this->Diseases->get($id);
-        $disease->state = 2;
+        $disease->state = 'INACTIVO';
         $errors = null;
 
         if ($this->Diseases->save($disease)) {

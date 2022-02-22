@@ -22,17 +22,18 @@ class PlacesController extends AppController
         $sortColumn = $this->getRequest()->getQuery('sort_column');
         $sortOrder = $this->getRequest()->getQuery('sort_order');
         $description = $this->getRequest()->getQuery('description');
-        $state = explode(',', $this->getRequest()->getQuery('state'));
+        $state = is_string($this->getRequest()->getQuery('state')) ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->Places->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
-        if ($description) {
+        if ($description && is_string($description)) {
             $query->where(['Places.description LIKE' => "%$description%"]);
         }
 
@@ -51,7 +52,7 @@ class PlacesController extends AppController
         $paginate = $this->request->getAttribute('paging')['Places'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('places', 'pagination', 'count'));
@@ -130,7 +131,6 @@ class PlacesController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Place id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -139,7 +139,7 @@ class PlacesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $place = $this->Places->get($id);
-        $place->state = 1;
+        $place->state = 'ACTIVO';
         $errors = null;
 
         if ($this->Places->save($place)) {
@@ -156,7 +156,6 @@ class PlacesController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Place id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -165,7 +164,7 @@ class PlacesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $place = $this->Places->get($id);
-        $place->state = 2;
+        $place->state = 'INACTIVO';
         $errors = null;
 
         if ($this->Places->save($place)) {

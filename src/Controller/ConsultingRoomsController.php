@@ -24,21 +24,22 @@ class ConsultingRoomsController extends AppController
         $description = $this->getRequest()->getQuery('description');
         $floor = $this->getRequest()->getQuery('floor');
         $placeId = $this->getRequest()->getQuery('place_id');
-        $state = explode(',', $this->getRequest()->getQuery('state'));
+        $state = is_string($this->getRequest()->getQuery('state')) ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->ConsultingRooms->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
-        if ($description) {
+        if ($description && is_string($description)) {
             $query->where(['ConsultingRooms.description LIKE' => "%$description%"]);
         }
 
-        if ($floor) {
+        if ($floor && is_string($floor)) {
             $query->where(['ConsultingRooms.floor LIKE' => "%$floor%"]);
         }
 
@@ -64,7 +65,7 @@ class ConsultingRoomsController extends AppController
         $paginate = $this->request->getAttribute('paging')['ConsultingRooms'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('consultingRooms', 'pagination', 'count'));
@@ -141,7 +142,6 @@ class ConsultingRoomsController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Consulting Room id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -150,7 +150,7 @@ class ConsultingRoomsController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $consultingRoom = $this->ConsultingRooms->get($id);
-        $consultingRoom->state = 1;
+        $consultingRoom->state = 'ACTIVO';
         $errors = null;
 
         if ($this->ConsultingRooms->save($consultingRoom)) {
@@ -167,7 +167,6 @@ class ConsultingRoomsController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Consulting Room id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -176,7 +175,7 @@ class ConsultingRoomsController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $consultingRoom = $this->ConsultingRooms->get($id);
-        $consultingRoom->state = 2;
+        $consultingRoom->state = 'INACTIVO';
         $errors = null;
 
         if ($this->ConsultingRooms->save($consultingRoom)) {

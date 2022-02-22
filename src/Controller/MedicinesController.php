@@ -23,21 +23,22 @@ class MedicinesController extends AppController
         $sortOrder = $this->getRequest()->getQuery('sort_order');
         $description = $this->getRequest()->getQuery('description');
         $presentation = $this->getRequest()->getQuery('presentation');
-        $state = explode(',', $this->getRequest()->getQuery('state'));
+        $state = is_string($this->getRequest()->getQuery('state')) ?
+            explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
 
         $query = $this->Medicines->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
-        if ($description) {
+        if ($description && is_string($description)) {
             $query->where(['Medicines.description LIKE' => "%$description%"]);
         }
 
-        if ($presentation) {
+        if ($presentation && is_string($presentation)) {
             $query->where(['Medicines.presentation LIKE' => "%$presentation"]);
         }
 
@@ -56,7 +57,7 @@ class MedicinesController extends AppController
         $paginate = $this->request->getAttribute('paging')['Medicines'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('medicines', 'pagination', 'count'));
@@ -133,7 +134,6 @@ class MedicinesController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Medicine id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -142,7 +142,7 @@ class MedicinesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $medicine = $this->Medicines->get($id);
-        $medicine->state = 1;
+        $medicine->state = 'ACTIVO';
         $errors = null;
 
         if ($this->Medicines->save($medicine)) {
@@ -159,7 +159,6 @@ class MedicinesController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Medicine id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -168,7 +167,7 @@ class MedicinesController extends AppController
         $this->getRequest()->allowMethod(['POST']);
         $id = $this->getRequest()->getData('id');
         $medicine = $this->Medicines->get($id);
-        $medicine->state = 2;
+        $medicine->state = 'INACTIVO';
         $errors = null;
 
         if ($this->Medicines->save($medicine)) {

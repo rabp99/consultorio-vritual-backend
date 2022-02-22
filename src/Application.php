@@ -138,6 +138,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         }
     }
 
+    /**
+     * Get Authentication Service to set users login config
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return \Authentication\AuthenticationServiceInterface
+     */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();

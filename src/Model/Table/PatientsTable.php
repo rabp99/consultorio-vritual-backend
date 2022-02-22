@@ -77,6 +77,12 @@ class PatientsTable extends Table
         return $validator;
     }
 
+    /**
+     * Enable patient.
+     *
+     * @param \App\Model\Entity\Patient &$patient Patient instance.
+     * @return bool
+     */
     public function enable(\App\Model\Entity\Patient &$patient): bool
     {
         $patient->state = 'ACTIVO';
@@ -87,6 +93,12 @@ class PatientsTable extends Table
         return false;
     }
 
+    /**
+     * Disable patient.
+     *
+     * @param \App\Model\Entity\Patient &$patient Patient instance.
+     * @return bool
+     */
     public function disable(\App\Model\Entity\Patient &$patient): bool
     {
         $patient->state = 'INACTIVO';

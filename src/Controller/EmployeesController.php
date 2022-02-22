@@ -21,12 +21,12 @@ class EmployeesController extends AppController
         $this->getRequest()->allowMethod('GET');
         $sortColumn = $this->getRequest()->getQuery('sort_column');
         $sortOrder = $this->getRequest()->getQuery('sort_order');
-        $personDocType = $this->getRequest()->getQuery('person_doc_type') ?
+        $personDocType = is_string($this->getRequest()->getQuery('person_doc_type')) ?
             explode(',', $this->getRequest()->getQuery('person_doc_type')) : null;
         $personDocNum = $this->getRequest()->getQuery('person_doc_num');
         $personFullName = $this->getRequest()->getQuery('person_full_name');
         $cmp = $this->getRequest()->getQuery('cmp');
-        $state = $this->getRequest()->getQuery('state') ?
+        $state = is_string($this->getRequest()->getQuery('state')) ?
             explode(',', $this->getRequest()->getQuery('state')) : null;
 
         $itemsPerPage = $this->request->getQuery('itemsPerPage');
@@ -34,7 +34,7 @@ class EmployeesController extends AppController
         $query = $this->Employees->find()
             ->contain(['People']);
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             if ($sortColumn === 'Employees.person_doc_num') {
                 $query->order([
                     'Employees.person_doc_type' => $sortOrder,
@@ -50,11 +50,11 @@ class EmployeesController extends AppController
             $query->where(['Employees.person_doc_type IN' => $personDocType]);
         }
 
-        if ($personDocNum) {
+        if ($personDocNum && is_string($personDocNum)) {
             $query->where(['Employees.person_doc_num LIKE' => "%$personDocNum%"]);
         }
 
-        if ($personFullName) {
+        if ($personFullName && is_string($personFullName)) {
             $query->where(['OR' => [
                 ['People.names LIKE' => "%$personFullName%"],
                 ['People.last_name1 LIKE' => "%$personFullName%"],
@@ -65,7 +65,7 @@ class EmployeesController extends AppController
             ]]);
         }
 
-        if ($cmp) {
+        if ($cmp && is_string($cmp)) {
             $query->where(['Employees.cmp LIKE' => "%$cmp%"]);
         }
 
@@ -84,7 +84,7 @@ class EmployeesController extends AppController
         $paginate = $this->request->getAttribute('paging')['Employees'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('employees', 'pagination', 'count'));
@@ -94,7 +94,6 @@ class EmployeesController extends AppController
     /**
      * View method
      *
-     * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -121,6 +120,7 @@ class EmployeesController extends AppController
         $this->getRequest()->allowMethod('POST');
         $employee = $this->Employees->newEntity($this->getRequest()->getData());
         $errors = null;
+        $message = null;
 
         try {
             $this->Employees->getConnection()->begin();
@@ -141,7 +141,6 @@ class EmployeesController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -171,7 +170,6 @@ class EmployeesController extends AppController
     /**
      * Enable method
      *
-     * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful enable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -198,7 +196,6 @@ class EmployeesController extends AppController
     /**
      * Disable method
      *
-     * @param string|null $id Employee id.
      * @return \Cake\Http\Response|null|void Redirects on successful disable, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */

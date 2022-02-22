@@ -29,7 +29,7 @@ class Person extends Entity
      * be mass assigned. For security purposes, it is advised to set '*' to false
      * (or remove it), and explicitly make individual fields accessible as needed.
      *
-     * @var array
+     * @var array<string, bool>
      */
     protected $_accessible = [
         'doc_type' => true,
@@ -47,6 +47,11 @@ class Person extends Entity
 
     protected $_virtual = ['full_name'];
 
+    /**
+     * Get Full Name.
+     *
+     * @return string
+     */
     protected function _getFullName(): string
     {
         return $this->last_name1 . ' ' . $this->last_name2 . ', ' . $this->names;

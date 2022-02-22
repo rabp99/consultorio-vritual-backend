@@ -31,7 +31,7 @@ class EmployeeRecordsController extends AppController
 
         $query = $this->EmployeeRecords->find();
 
-        if ($sortColumn && $sortOrder) {
+        if ($sortColumn && $sortOrder && is_string($sortColumn)) {
             $query->order([$sortColumn => $sortOrder]);
         }
 
@@ -67,7 +67,7 @@ class EmployeeRecordsController extends AppController
         $paginate = $this->request->getAttribute('paging')['EmployeeRecords'];
         $pagination = [
             'totalItems' => $paginate['count'],
-            'itemsPerPage' =>  $paginate['perPage'],
+            'itemsPerPage' => $paginate['perPage'],
         ];
 
         $this->set(compact('employeeRecords', 'pagination', 'count'));
