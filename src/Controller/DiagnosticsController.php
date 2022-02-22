@@ -69,7 +69,7 @@ class DiagnosticsController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('diagnostics', 'pagination', 'count'));
+        $this->set(['diagnostics' => $diagnostics, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -87,7 +87,7 @@ class DiagnosticsController extends AppController
             'contain' => ['Appointments', 'Diseases'],
         ]);
 
-        $this->set(compact('diagnostic'));
+        $this->set(['diagnostic' => $diagnostic]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -110,7 +110,7 @@ class DiagnosticsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('diagnostic', 'message', 'errors'));
+        $this->set(['diagnostic' => $diagnostic, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -138,7 +138,7 @@ class DiagnosticsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('diagnostic', 'message', 'errors'));
+        $this->set(['diagnostic' => $diagnostic, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

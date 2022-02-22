@@ -100,7 +100,7 @@ class UsersController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('users', 'pagination', 'count'));
+        $this->set(['users' => $users, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -118,7 +118,7 @@ class UsersController extends AppController
             'contain' => [],
         ]);
 
-        $this->set(compact('user'));
+        $this->set(['user' => $user]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -141,7 +141,7 @@ class UsersController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('user', 'message', 'errors'));
+        $this->set(['user' => $user, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -169,7 +169,7 @@ class UsersController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('user', 'message', 'errors'));
+        $this->set(['user' => $user, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -194,7 +194,7 @@ class UsersController extends AppController
             $errors = $user->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('user', 'message', 'errors'));
+        $this->set(['user' => $user, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -219,7 +219,7 @@ class UsersController extends AppController
             $errors = $user->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('user', 'message', 'errors'));
+        $this->set(['user' => $user, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -250,7 +250,7 @@ class UsersController extends AppController
             $this->response = $this->response->withStatus(401);
             $json = [];
         }
-        $this->set(compact('json'));
+        $this->set(['json' => $json]);
         $this->viewBuilder()->setOption('serialize', 'json');
     }
 
@@ -275,7 +275,7 @@ class UsersController extends AppController
             $this->setResponse($this->response->withStatus(500));
         }
 
-        $this->set(compact('message'));
+        $this->set(['message' => $message]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -299,7 +299,7 @@ class UsersController extends AppController
             $errors = $user->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('user', 'message', 'errors'));
+        $this->set(['user' => $user, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

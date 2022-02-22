@@ -60,7 +60,7 @@ class MedicinesController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('medicines', 'pagination', 'count'));
+        $this->set(['medicines' => $medicines, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -76,7 +76,7 @@ class MedicinesController extends AppController
         $this->getRequest()->allowMethod('GET');
         $medicine = $this->Medicines->get($id);
 
-        $this->set(compact('medicine'));
+        $this->set(['medicine' => $medicine]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -99,7 +99,7 @@ class MedicinesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('medicine', 'message', 'errors'));
+        $this->set(['medicine' => $medicine, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -127,7 +127,7 @@ class MedicinesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('medicine', 'message', 'errors'));
+        $this->set(['medicine' => $medicine, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -152,7 +152,7 @@ class MedicinesController extends AppController
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('medicine', 'message', 'errors'));
+        $this->set(['medicine' => $medicine, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -177,7 +177,7 @@ class MedicinesController extends AppController
             $errors = $medicine->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('medicine', 'message', 'errors'));
+        $this->set(['medicine' => $medicine, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -193,7 +193,7 @@ class MedicinesController extends AppController
             ->select(['id', 'description', 'presentation'])
             ->where(['Medicines.state' => 'ACTIVO']);
 
-        $this->set(compact('medicines'));
+        $this->set(['medicines' => $medicines]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

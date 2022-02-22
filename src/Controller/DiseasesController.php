@@ -55,7 +55,7 @@ class DiseasesController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('diseases', 'pagination', 'count'));
+        $this->set(['diseases' => $diseases, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -71,7 +71,7 @@ class DiseasesController extends AppController
         $this->getRequest()->allowMethod('GET');
         $disease = $this->Diseases->get($id);
 
-        $this->set(compact('disease'));
+        $this->set(['disease' => $disease]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -94,7 +94,7 @@ class DiseasesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('disease', 'message', 'errors'));
+        $this->set(['disease' => $disease, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -122,7 +122,7 @@ class DiseasesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('disease', 'message', 'errors'));
+        $this->set(['disease' => $disease, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -147,7 +147,7 @@ class DiseasesController extends AppController
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('disease', 'message', 'errors'));
+        $this->set(['disease' => $disease, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -172,7 +172,7 @@ class DiseasesController extends AppController
             $errors = $disease->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('disease', 'message', 'errors'));
+        $this->set(['disease' => $disease, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

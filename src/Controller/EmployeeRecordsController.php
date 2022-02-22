@@ -70,7 +70,7 @@ class EmployeeRecordsController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('employeeRecords', 'pagination', 'count'));
+        $this->set(['employeeRecords' => $employeeRecords, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -88,7 +88,7 @@ class EmployeeRecordsController extends AppController
             'contain' => [],
         ]);
 
-        $this->set(compact('employeeRecord'));
+        $this->set(['employeeRecord' => $employeeRecord]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -111,7 +111,7 @@ class EmployeeRecordsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('employeeRecord', 'message', 'errors'));
+        $this->set(['employeeRecord' => $employeeRecord, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -139,7 +139,7 @@ class EmployeeRecordsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('employeeRecord', 'message', 'errors'));
+        $this->set(['employeeRecord' => $employeeRecord, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -164,7 +164,7 @@ class EmployeeRecordsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('employeeRecord', 'message', 'errors'));
+        $this->set(['employeeRecord' => $employeeRecord, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

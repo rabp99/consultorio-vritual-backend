@@ -75,7 +75,7 @@ class PatientsController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('patients', 'pagination', 'count'));
+        $this->set(['patients' => $patients, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -94,7 +94,7 @@ class PatientsController extends AppController
             'contain' => ['People'],
         ]);
 
-        $this->set(compact('patient'));
+        $this->set(['patient' => $patient]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -121,7 +121,7 @@ class PatientsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
             $this->Patients->getConnection()->rollback();
         } finally {
-            $this->set(compact('patient', 'message', 'errors'));
+            $this->set(['patient' => $patient, 'message' => $message, 'errors' => $errors]);
             $this->viewBuilder()->setOption('serialize', true);
         }
     }
@@ -152,7 +152,7 @@ class PatientsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('patient', 'message', 'errors'));
+        $this->set(['patient' => $patient, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -177,7 +177,7 @@ class PatientsController extends AppController
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('patient', 'message', 'errors'));
+        $this->set(['patient' => $patient, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -202,7 +202,7 @@ class PatientsController extends AppController
             $errors = $patient->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('patient', 'message', 'errors'));
+        $this->set(['patient' => $patient, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

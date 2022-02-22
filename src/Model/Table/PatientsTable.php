@@ -86,11 +86,8 @@ class PatientsTable extends Table
     public function enable(\App\Model\Entity\Patient &$patient): bool
     {
         $patient->state = 'ACTIVO';
-        if ($this->save($patient)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($patient);
     }
 
     /**
@@ -102,10 +99,7 @@ class PatientsTable extends Table
     public function disable(\App\Model\Entity\Patient &$patient): bool
     {
         $patient->state = 'INACTIVO';
-        if ($this->save($patient)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($patient);
     }
 }

@@ -87,7 +87,7 @@ class EmployeesController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('employees', 'pagination', 'count'));
+        $this->set(['employees' => $employees, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -106,7 +106,7 @@ class EmployeesController extends AppController
             'contain' => ['People'],
         ]);
 
-        $this->set(compact('employee'));
+        $this->set(['employee' => $employee]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -133,7 +133,7 @@ class EmployeesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
             $this->Employees->getConnection()->rollback();
         } finally {
-            $this->set(compact('employee', 'message', 'errors'));
+            $this->set(['employee' => $employee, 'message' => $message, 'errors' => $errors]);
             $this->viewBuilder()->setOption('serialize', true);
         }
     }
@@ -163,7 +163,7 @@ class EmployeesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('employee', 'message', 'errors'));
+        $this->set(['employee' => $employee, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -189,7 +189,7 @@ class EmployeesController extends AppController
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('employee', 'message', 'errors'));
+        $this->set(['employee' => $employee, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -215,7 +215,7 @@ class EmployeesController extends AppController
             $errors = $employee->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('employee', 'message', 'errors'));
+        $this->set(['employee' => $employee, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

@@ -63,7 +63,7 @@ class AppointmentsController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('appointments', 'pagination', 'count'));
+        $this->set(['appointments' => $appointments, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -81,7 +81,7 @@ class AppointmentsController extends AppController
             'contain' => ['Patients' => 'People', 'Employees' => 'People', 'ConsultingRooms', 'Diagnostics', 'Recipes'],
         ]);
 
-        $this->set(compact('appointment'));
+        $this->set(['appointment' => $appointment]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -99,7 +99,7 @@ class AppointmentsController extends AppController
             'contain' => ['Patients' => 'People', 'Employees' => 'People'],
         ]);
 
-        $this->set(compact('appointment'));
+        $this->set(['appointment' => $appointment]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -120,18 +120,13 @@ class AppointmentsController extends AppController
             $this->Appointments->saveOrFail($appointment);
             $message = __('La cita fue registrada correctamente');
             $this->Appointments->getConnection()->commit();
-        } catch (\PDOException $ex) {
-            $message = __('La cita no fue registrada correctamente');
-            $errors = $appointment->getErrors();
-            $this->setResponse($this->getResponse()->withStatus(500));
-            $this->Appointments->getConnection()->rollback();
-        } catch (\Cake\ORM\Exception\PersistenceFailedException $ex) {
+        } catch (\PDOException | \Cake\ORM\Exception\PersistenceFailedException $ex) {
             $message = __('La cita no fue registrada correctamente');
             $errors = $appointment->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
             $this->Appointments->getConnection()->rollback();
         } finally {
-            $this->set(compact('appointment', 'message', 'errors'));
+            $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
             $this->viewBuilder()->setOption('serialize', true);
         }
     }
@@ -166,7 +161,7 @@ class AppointmentsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('appointment', 'message', 'errors'));
+        $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -197,7 +192,7 @@ class AppointmentsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('appointment', 'message', 'errors'));
+        $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -228,7 +223,7 @@ class AppointmentsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('appointment', 'message', 'errors'));
+        $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -262,7 +257,7 @@ class AppointmentsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('appointment', 'message', 'errors'));
+        $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -290,7 +285,7 @@ class AppointmentsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('appointment', 'message', 'errors'));
+        $this->set(['appointment' => $appointment, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -311,7 +306,7 @@ class AppointmentsController extends AppController
             'patient_person_doc_num' => $patient_person_doc_num,
         ]);
 
-        $this->set(compact('appointments'));
+        $this->set(['appointments' => $appointments]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

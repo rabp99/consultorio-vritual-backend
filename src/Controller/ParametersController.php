@@ -20,7 +20,7 @@ class ParametersController extends AppController
     {
         $parameters = $this->paginate($this->Parameters);
 
-        $this->set(compact('parameters'));
+        $this->set(['parameters' => $parameters]);
     }
 
     /**
@@ -36,7 +36,7 @@ class ParametersController extends AppController
             'contain' => [],
         ]);
 
-        $this->set(compact('parameter'));
+        $this->set(['parameter' => $parameter]);
     }
 
     /**
@@ -56,7 +56,7 @@ class ParametersController extends AppController
             }
             $this->Flash->error(__('The parameter could not be saved. Please, try again.'));
         }
-        $this->set(compact('parameter'));
+        $this->set(['parameter' => $parameter]);
     }
 
     /**
@@ -80,7 +80,7 @@ class ParametersController extends AppController
             }
             $this->Flash->error(__('The parameter could not be saved. Please, try again.'));
         }
-        $this->set(compact('parameter'));
+        $this->set(['parameter' => $parameter]);
     }
 
     /**

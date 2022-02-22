@@ -63,7 +63,7 @@ class RecipesController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('recipes', 'pagination', 'count'));
+        $this->set(['recipes' => $recipes, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -81,7 +81,7 @@ class RecipesController extends AppController
             'contain' => ['Appointments', 'RecipeDetails'],
         ]);
 
-        $this->set(compact('recipe'));
+        $this->set(['recipe' => $recipe]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -104,7 +104,7 @@ class RecipesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('recipe', 'message', 'errors'));
+        $this->set(['recipe' => $recipe, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -132,7 +132,7 @@ class RecipesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('recipe', 'message', 'errors'));
+        $this->set(['recipe' => $recipe, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

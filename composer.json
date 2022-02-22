@@ -52,13 +52,16 @@
             "@test",
             "@cs-check",
             "@psalm",
-            "@stan"
+            "@stan",
+            "@rector-check"
         ],
         "cs-check": "phpcs --colors -p  src/ tests/",
         "cs-fix": "phpcbf --colors -p src/ tests/",
         "psalm": "psalm",
         "stan": "phpstan analyse",
-        "test": "phpunit --colors=always"
+        "test": "phpunit --colors=always",
+        "rector-check": "rector process --dry-run",
+        "rector-fix": "rector process"
     },
     "prefer-stable": true,
     "config": {

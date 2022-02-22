@@ -55,7 +55,7 @@ class PlacesController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('places', 'pagination', 'count'));
+        $this->set(['places' => $places, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -73,7 +73,7 @@ class PlacesController extends AppController
             'contain' => ['ConsultingRooms'],
         ]);
 
-        $this->set(compact('place'));
+        $this->set(['place' => $place]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -96,7 +96,7 @@ class PlacesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('place', 'message', 'errors'));
+        $this->set(['place' => $place, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -124,7 +124,7 @@ class PlacesController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('place', 'message', 'errors'));
+        $this->set(['place' => $place, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -149,7 +149,7 @@ class PlacesController extends AppController
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('place', 'message', 'errors'));
+        $this->set(['place' => $place, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -174,7 +174,7 @@ class PlacesController extends AppController
             $errors = $place->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('place', 'message', 'errors'));
+        $this->set(['place' => $place, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -188,7 +188,7 @@ class PlacesController extends AppController
         $this->getRequest()->allowMethod('GET');
         $places = $this->Places->find()->where(['Places.state' => 'ACTIVO']);
 
-        $this->set(compact('places'));
+        $this->set(['places' => $places]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

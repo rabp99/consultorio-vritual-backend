@@ -36,8 +36,8 @@ Configure::write('App.fullBaseUrl', 'http://localhost');
 // But since PagesControllerTest is run with debug enabled and DebugKit is loaded
 // in application, without setting up these config DebugKit errors out.
 ConnectionManager::setConfig('test_debug_kit', [
-    'className' => 'Cake\Database\Connection',
-    'driver' => 'Cake\Database\Driver\Sqlite',
+    'className' => \Cake\Database\Connection::class,
+    'driver' => \Cake\Database\Driver\Sqlite::class,
     'database' => TMP . 'debug_kit.sqlite',
     'encoding' => 'utf8',
     'cacheMetadata' => true,

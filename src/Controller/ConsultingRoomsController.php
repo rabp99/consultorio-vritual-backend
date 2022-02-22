@@ -68,7 +68,7 @@ class ConsultingRoomsController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('consultingRooms', 'pagination', 'count'));
+        $this->set(['consultingRooms' => $consultingRooms, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -84,7 +84,7 @@ class ConsultingRoomsController extends AppController
         $this->getRequest()->allowMethod('GET');
         $consultingRoom = $this->ConsultingRooms->get($id);
 
-        $this->set(compact('consultingRoom'));
+        $this->set(['consultingRoom' => $consultingRoom]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -107,7 +107,7 @@ class ConsultingRoomsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('consultingRoom', 'message', 'errors'));
+        $this->set(['consultingRoom' => $consultingRoom, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -135,7 +135,7 @@ class ConsultingRoomsController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('consultingRoom', 'message', 'errors'));
+        $this->set(['consultingRoom' => $consultingRoom, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -160,7 +160,7 @@ class ConsultingRoomsController extends AppController
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('consultingRoom', 'message', 'errors'));
+        $this->set(['consultingRoom' => $consultingRoom, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -185,7 +185,7 @@ class ConsultingRoomsController extends AppController
             $errors = $consultingRoom->getErrors();
             $this->setResponse($this->getResponse()->withStatus(500));
         }
-        $this->set(compact('consultingRoom', 'message', 'errors'));
+        $this->set(['consultingRoom' => $consultingRoom, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -199,7 +199,7 @@ class ConsultingRoomsController extends AppController
         $this->getRequest()->allowMethod('GET');
         $consultingRooms = $this->ConsultingRooms->find()->where(['ConsultingRooms.state' => 'ACTIVO']);
 
-        $this->set(compact('consultingRooms'));
+        $this->set(['consultingRooms' => $consultingRooms]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

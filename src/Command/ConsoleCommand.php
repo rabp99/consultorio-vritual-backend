@@ -38,7 +38,7 @@ class ConsoleCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        if (!class_exists('Psy\Shell')) {
+        if (!class_exists(\Psy\Shell::class)) {
             $io->err('<error>Unable to load Psy\Shell.</error>');
             $io->err('');
             $io->err('Make sure you have installed psysh as a dependency,');

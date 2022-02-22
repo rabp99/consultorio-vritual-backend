@@ -113,11 +113,7 @@ class EmployeesTable extends Table
                 return true;
             }
 
-            if ($entity->employee_records[0]->start < $entity->last_employee_record->end) {
-                return false;
-            }
-
-            return true;
+            return $entity->employee_records[0]->start >= $entity->last_employee_record->end;
         }, 'startOufOfDate',
         [
             'errorField' => 'start',
@@ -136,11 +132,7 @@ class EmployeesTable extends Table
                 return true;
             }
 
-            if ($entity->employee_records[0]->end < $entity->last_employee_record->start) {
-                return false;
-            }
-
-            return true;
+            return $entity->employee_records[0]->end >= $entity->last_employee_record->start;
         }, 'endOufOfDate',
         [
             'errorField' => 'end',
@@ -163,11 +155,8 @@ class EmployeesTable extends Table
         $lastEmployeeRecord = $this->EmployeeRecords->newEmptyEntity();
         $lastEmployeeRecord->start = new FrozenDate($start);
         $employee->employee_records = [$lastEmployeeRecord];
-        if ($this->save($employee)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($employee);
     }
 
     /**
@@ -183,10 +172,7 @@ class EmployeesTable extends Table
         $employeeRecord = $this->EmployeeRecords->get($employee->last_employee_record->get('id'));
         $employeeRecord->end = new FrozenDate($end);
         $employee->employee_records = [$employeeRecord];
-        if ($this->save($employee)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($employee);
     }
 }

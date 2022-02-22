@@ -90,7 +90,7 @@ class PeopleController extends AppController
             'itemsPerPage' => $paginate['perPage'],
         ];
 
-        $this->set(compact('people', 'pagination', 'count'));
+        $this->set(['people' => $people, 'pagination' => $pagination, 'count' => $count]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -109,7 +109,7 @@ class PeopleController extends AppController
             'contain' => [],
         ]);
 
-        $this->set(compact('person'));
+        $this->set(['person' => $person]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -132,7 +132,7 @@ class PeopleController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('person', 'message', 'errors'));
+        $this->set(['person' => $person, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -162,7 +162,7 @@ class PeopleController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('person', 'message', 'errors'));
+        $this->set(['person' => $person, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 
@@ -187,7 +187,7 @@ class PeopleController extends AppController
             $this->setResponse($this->getResponse()->withStatus(500));
         }
 
-        $this->set(compact('person', 'message', 'errors'));
+        $this->set(['person' => $person, 'message' => $message, 'errors' => $errors]);
         $this->viewBuilder()->setOption('serialize', true);
     }
 }

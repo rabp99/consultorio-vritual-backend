@@ -173,11 +173,8 @@ class AppointmentsTable extends Table
     {
         $appointment->state = self::CANCELADA;
         $appointment->cancel_date = FrozenTime::now();
-        if ($this->save($appointment)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($appointment);
     }
 
     /**
@@ -190,11 +187,8 @@ class AppointmentsTable extends Table
     {
         $appointment->state = self::PENDIENTE;
         $appointment->cancel_date = null;
-        if ($this->save($appointment)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($appointment);
     }
 
     /**
@@ -207,11 +201,8 @@ class AppointmentsTable extends Table
     {
         $appointment->setAccess('consulting_room', false);
         $appointment->state = self::REPROGRAMADA;
-        if ($this->save($appointment)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($appointment);
     }
 
     /**
@@ -223,11 +214,8 @@ class AppointmentsTable extends Table
     public function attend(\App\Model\Entity\Appointment &$appointment): bool
     {
         $appointment->state = self::TERMINADA;
-        if ($this->save($appointment)) {
-            return true;
-        }
 
-        return false;
+        return (bool)$this->save($appointment);
     }
 
     /**
