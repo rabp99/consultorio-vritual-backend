@@ -185,7 +185,7 @@ return [
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        'ignoredDeprecationPaths' => [],
+        'ignoredDeprecationPaths' => ['vendor/cakephp/authentication/src/Authenticator/AuthenticatorCollection.php'],
     ],
 
     /*
