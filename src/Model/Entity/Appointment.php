@@ -17,18 +17,27 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $appointment_date
  * @property \Cake\I18n\FrozenTime|null $cancel_date
  * @property string|null $cost
+ * @property int|null $systolic_blood_pressure
+ * @property int|null $diastolic_blood_pressure
+ * @property float|null $weight
+ * @property float|null $height
+ * @property string|null $comment
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property string $state
  * @property string $user_created
  * @property string|null $user_modified
  *
- * @property \App\Model\Entity\Patient $patient
+ * @property \App\Model\Entity\Citt $citt
  * @property \App\Model\Entity\ConsultingRoom $consulting_room
- * @property \App\Model\Entity\Diagnostic[] $diagnostics
- * @property \App\Model\Entity\Recipe[] $recipes
  * @property \App\Model\Entity\User $creator
- * @property \App\Model\Entity\Modifier $modifier
+ * @property \App\Model\Entity\Diagnostic[] $diagnostics
+ * @property \App\Model\Entity\Employee $employee
+ * @property \App\Model\Entity\ImagingExam[] $imaging_exams
+ * @property \App\Model\Entity\LaboratoryExam[] $laboratory_exams
+ * @property \App\Model\Entity\User $modifier
+ * @property \App\Model\Entity\Patient $patient
+ * @property \App\Model\Entity\Recipe[] $recipes
  */
 class Appointment extends Entity
 {
@@ -50,19 +59,26 @@ class Appointment extends Entity
         'appointment_date' => true,
         'cancel_date' => true,
         'cost' => true,
+        'systolic_blood_pressure' => true,
+        'diastolic_blood_pressure' => true,
+        'weight' => true,
+        'height' => true,
+        'comment' => true,
         'created' => true,
         'modified' => true,
         'state' => true,
         'user_created' => true,
         'user_modified' => true,
 
-        'patient' => true,
+        'citt' => true,
         'consulting_room' => true,
-        'diagnostics' => true,
-        'recipes' => true,
         'creator' => true,
+        'diagnostics' => true,
+        'employee' => true,
+        'imaging_exams' => true,
+        'laboratory_exams' => true,
         'modifier' => true,
-
-        'diseases' => true,
+        'patient' => true,
+        'recipes' => true,
     ];
 }

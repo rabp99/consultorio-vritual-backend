@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cfd9cd8390c535b288992f1dafa0b492",
+    "content-hash": "76e2c08995bf17b434abd6c16e1e6eed",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -5291,6 +5291,45 @@
                 "source": "https://github.com/bobthecow/psysh/tree/v0.11.1"
             },
             "time": "2022-01-03T13:58:38+00:00"
+        },
+        {
+            "name": "rabp99/cakephp-baker-plugin",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rabp99/cakephp-baker-plugin.git",
+                "reference": "bc603d0f741e48a8b6234f0d4723313f860ba5c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rabp99/cakephp-baker-plugin/zipball/bc603d0f741e48a8b6234f0d4723313f860ba5c1",
+                "reference": "bc603d0f741e48a8b6234f0d4723313f860ba5c1",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": ">=4.2.0",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "firebase/php-jwt": "^5.4",
+                "phpunit/phpunit": "^8.5 || ^9.3"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Rabp99\\Bake\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Plugin for bake controllers on CakePHP",
+            "support": {
+                "issues": "https://github.com/rabp99/cakephp-baker-plugin/issues",
+                "source": "https://github.com/rabp99/cakephp-baker-plugin/tree/v1.0.2"
+            },
+            "time": "2021-11-23T02:46:35+00:00"
         },
         {
             "name": "react/promise",
