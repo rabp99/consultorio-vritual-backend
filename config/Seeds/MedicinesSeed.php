@@ -28,7 +28,7 @@ class MedicinesSeed extends AbstractSeed
             $data[] = [
                 'description' => $faker->text(20), 
                 'presentation' => $faker->text(10), 
-                'created' => FrozenDate::now(), 
+                'created' => FrozenDate::now()->format('Y-m-d'), 
                 'state' => 'ACTIVO'
             ];
         }

@@ -43,7 +43,7 @@ class LaboratoryExamsTable extends Table
 
         $this->setTable('laboratory_exams');
         $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('description');
 
         $this->addBehavior('Timestamp');
 

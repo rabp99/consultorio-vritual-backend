@@ -29,7 +29,7 @@ class ConsultingRoomsSeed extends AbstractSeed
                 'description' => $faker->numberBetween(1, 99),
                 'floor' => $faker->numberBetween(1, 999),
                 'place_id' => $faker->numberBetween(1, 3),
-                'created' => FrozenDate::now(), 
+                'created' => FrozenDate::now()->format('Y-m-d'), 
                 'state' => 'ACTIVO'
             ];
         }

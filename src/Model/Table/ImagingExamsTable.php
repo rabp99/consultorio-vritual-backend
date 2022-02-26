@@ -43,7 +43,7 @@ class ImagingExamsTable extends Table
 
         $this->setTable('imaging_exams');
         $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('description');
 
         $this->addBehavior('Timestamp');
 

@@ -32,6 +32,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\ConsultingRoom $consulting_room
  * @property \App\Model\Entity\User $creator
  * @property \App\Model\Entity\Diagnostic[] $diagnostics
+ * @property \App\Model\Entity\Disease[] $diseases
  * @property \App\Model\Entity\Employee $employee
  * @property \App\Model\Entity\ImagingExam[] $imaging_exams
  * @property \App\Model\Entity\LaboratoryExam[] $laboratory_exams
@@ -74,6 +75,7 @@ class Appointment extends Entity
         'consulting_room' => true,
         'creator' => true,
         'diagnostics' => true,
+        'diseases' => true,
         'employee' => true,
         'imaging_exams' => true,
         'laboratory_exams' => true,

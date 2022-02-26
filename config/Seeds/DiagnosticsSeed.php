@@ -28,7 +28,7 @@ class DiagnosticsSeed extends AbstractSeed
             $data[] = [
                 'appointment_id' => $faker->numberBetween(31, 60),
                 'disease_id' => $faker->numberBetween(1, 100),
-                'created' => FrozenDate::now()
+                'created' => FrozenDate::now()->format('Y-m-d')
             ];
         }
         

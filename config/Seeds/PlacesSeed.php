@@ -28,7 +28,7 @@ class PlacesSeed extends AbstractSeed
             $data[] = [
                 'description' => $faker->city,
                 'address' => $faker->address,
-                'created' => FrozenDate::now(), 
+                'created' => FrozenDate::now()->format('Y-m-d'), 
                 'state' => 'ACTIVO'
             ];
         }

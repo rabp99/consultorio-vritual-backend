@@ -15,6 +15,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ConsultingRoomsTable&\Cake\ORM\Association\BelongsTo $ConsultingRooms
  * @property \App\Model\Table\DiagnosticsTable&\Cake\ORM\Association\HasMany $Diagnostics
  * @property \App\Model\Table\RecipesTable&\Cake\ORM\Association\HasMany $Recipes
+ * 
  * @method \App\Model\Entity\Appointment newEmptyEntity()
  * @method \App\Model\Entity\Appointment newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Appointment[] newEntities(array $data, array $options = [])
@@ -54,35 +55,45 @@ class AppointmentsTable extends Table
         $this->addBehavior('Timestamp');
         $this->addBehavior('Userstamp');
 
-        $this->belongsTo('ConsultingRooms', [
-            'foreignKey' => 'consulting_room_id',
-            'joinType' => 'INNER',
-        ]);
-        $this->belongsTo('Employees', [
-            'foreignKey' => ['employee_person_doc_type', 'employee_person_doc_num'],
-            'joinType' => 'INNER',
-        ]);
-        $this->belongsTo('Patients', [
-            'foreignKey' => ['patient_person_doc_type', 'patient_person_doc_num'],
-            'joinType' => 'INNER',
-        ]);
+        $this->hasOne('Ciits');
+        
+        $this->belongsTo('ConsultingRooms')
+            ->setForeignKey('consulting_room_id')
+            ->setJoinType('INNER');
+        
         $this->belongsTo('Creator')
             ->setForeignKey('user_creator')
             ->setJoinType('INNER')
             ->setClassName('Users');
-        $this->hasMany('Diagnostics', [
-            'foreignKey' => 'appointment_id',
-        ]);
-        $this->hasMany('Recipes', [
-            'foreignKey' => 'appointment_id',
-        ]);
-
+        
+        $this->hasMany('Diagnostics')
+            ->setForeignKey('appointment_id');
+        
         $this->belongsToMany(
             'Diseases',
-            ['joinTable' => 'diagnostics']
-        )
+            ['joinTable' => 'diagnostics'])
             ->setForeignKey('appointment_id')
             ->setTargetForeignKey('disease_id');
+        
+        $this->belongsTo('Employees')
+            ->setForeignKey(['employee_person_doc_type', 'employee_person_doc_num'])
+            ->setJoinType('INNER');
+        
+        $this->belongsToMany('ImagingExams');
+        
+        $this->belongsToMany('LaboratoryExams');
+        
+        $this->belongsTo('Modifier')
+            ->setForeignKey('user_modifier')
+            ->setJoinType('INNER')
+            ->setClassName('Users');
+        
+        $this->belongsTo('Patients')
+            ->setForeignKey(['patient_person_doc_type', 'patient_person_doc_num'])
+            ->setJoinType('INNER');
+        
+        $this->hasMany('Recipes')
+            ->setForeignKey('appointment_id');
     }
 
     /**
@@ -133,6 +144,26 @@ class AppointmentsTable extends Table
             ->decimal('cost')
             ->allowEmptyString('cost');
 
+        $validator
+            ->naturalNumber('systolic_blood_pressure')
+            ->allowEmptyString('systolic_blood_pressure');
+
+        $validator
+            ->naturalNumber('diastolic_blood_pressure')
+            ->allowEmptyString('diastolic_blood_pressure');
+        
+        $validator
+            ->decimal('weight')
+            ->allowEmptyString('weight');
+        
+        $validator
+            ->decimal('height')
+            ->allowEmptyString('height');
+        
+        $validator
+            ->scalar('comment')
+            ->allowEmptyString('comment');
+        
         $validator
             ->scalar('state')
             ->requirePresence('state', 'create')

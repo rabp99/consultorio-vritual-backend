@@ -26,8 +26,8 @@ class EmployeeRecordsSeed extends AbstractSeed
             $data[] = [
                 'employee_person_doc_type' => 'DNI',
                 'employee_person_doc_num' => str_repeat(strval($i), 8),
-                'start' => FrozenDate::now(), 
-                'created' => FrozenDate::now(), 
+                'start' => FrozenDate::now()->format('Y-m-d'), 
+                'created' => FrozenDate::now()->format('Y-m-d'), 
             ];
         }
         
@@ -35,18 +35,18 @@ class EmployeeRecordsSeed extends AbstractSeed
             $data[] = [
                 'employee_person_doc_type' => 'CEX',
                 'employee_person_doc_num' => str_repeat(strval($i), 8),
-                'start' => FrozenDate::now(), 
-                'created' => FrozenDate::now(), 
+                'start' => FrozenDate::now()->format('Y-m-d'), 
+                'created' => FrozenDate::now()->format('Y-m-d'), 
             ];
         }
         
         $data[] = [
             'employee_person_doc_type' => 'DNI',
             'employee_person_doc_num' => '12345678',
-            'start' => FrozenDate::now()->modify('- 2days'), 
-            'end' => FrozenDate::now(), 
-            'created' => FrozenDate::now(), 
-            'modified' => FrozenDate::now(), 
+            'start' => FrozenDate::now()->modify('- 2days')->format('Y-m-d'), 
+            'end' => FrozenDate::now()->format('Y-m-d'), 
+            'created' => FrozenDate::now()->format('Y-m-d'), 
+            'modified' => FrozenDate::now()->format('Y-m-d'), 
         ];
         
         $table = $this->table('employee_records');

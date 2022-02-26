@@ -31,7 +31,7 @@ class RecipesSeed extends AbstractSeed
                 'amount' => $faker->numberBetween(1, 30),
                 'days' => $faker->numberBetween(1, 12),
                 'prescription' => $faker->text(60),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
             ];
         }
         

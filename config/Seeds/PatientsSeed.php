@@ -26,7 +26,7 @@ class PatientsSeed extends AbstractSeed
             $data[] = [
                 'person_doc_type' => 'DNI',
                 'person_doc_num' => str_repeat(strval($i), 8),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO'
             ];
         }
@@ -35,7 +35,7 @@ class PatientsSeed extends AbstractSeed
             $data[] = [
                 'person_doc_type' => 'CEX',
                 'person_doc_num' => str_repeat(strval($i), 8),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO'
             ];
         }
@@ -43,7 +43,7 @@ class PatientsSeed extends AbstractSeed
         $data[] = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '87654321',
-            'created' => FrozenDate::now(),
+            'created' => FrozenDate::now()->format('Y-m-d'),
             'state' => 'INACTIVO'
         ];
         
