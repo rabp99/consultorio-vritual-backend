@@ -5,7 +5,6 @@ namespace App\Test\Fixture;
 
 use Cake\I18n\FrozenDate;
 use Cake\TestSuite\Fixture\TestFixture;
-use Faker\Factory;
 
 /**
  * PatientsFixture
@@ -16,14 +15,13 @@ class PatientsFixture extends TestFixture
 
     public function init(): void
     {
-        $faker = Factory::create('es_PE');
         $this->records = [];
 
         for ($i = 5; $i < 10; $i++) {
             $this->records[] = [
                 'person_doc_type' => 'DNI',
                 'person_doc_num' => str_repeat(strval($i), 8),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }
@@ -32,7 +30,7 @@ class PatientsFixture extends TestFixture
             $this->records[] = [
                 'person_doc_type' => 'CEX',
                 'person_doc_num' => str_repeat(strval($i), 8),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }
@@ -40,7 +38,7 @@ class PatientsFixture extends TestFixture
         $this->records[] = [
             'person_doc_type' => 'DNI',
             'person_doc_num' => '87654321',
-            'created' => FrozenDate::now(),
+            'created' => FrozenDate::now()->format('Y-m-d'),
             'state' => 'INACTIVO',
         ];
 

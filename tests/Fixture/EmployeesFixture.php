@@ -24,7 +24,7 @@ class EmployeesFixture extends TestFixture
                 'person_doc_type' => 'DNI',
                 'person_doc_num' => str_repeat(strval($i), 8),
                 'cmp' => $faker->numberBetween(111111, 999999),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }
@@ -34,7 +34,7 @@ class EmployeesFixture extends TestFixture
                 'person_doc_type' => 'CEX',
                 'person_doc_num' => str_repeat(strval($i), 8),
                 'cmp' => $faker->numberBetween(111111, 999999),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }
@@ -43,7 +43,7 @@ class EmployeesFixture extends TestFixture
             'person_doc_type' => 'DNI',
             'person_doc_num' => '12345678',
             'cmp' => $faker->numberBetween(111111, 999999),
-            'created' => FrozenDate::now(),
+            'created' => FrozenDate::now()->format('Y-m-d'),
             'state' => 'INACTIVO',
         ];
 

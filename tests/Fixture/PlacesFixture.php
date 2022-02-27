@@ -23,7 +23,7 @@ class PlacesFixture extends TestFixture
             $this->records[] = [
                 'description' => $faker->city,
                 'address' => $faker->address,
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }

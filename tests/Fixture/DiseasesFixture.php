@@ -22,7 +22,7 @@ class DiseasesFixture extends TestFixture
         for ($i = 0; $i < 100; $i++) {
             $this->records[] = [
                 'description' => $faker->text(20),
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ];
         }

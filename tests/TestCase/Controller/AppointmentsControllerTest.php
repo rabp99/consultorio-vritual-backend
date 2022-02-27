@@ -354,7 +354,7 @@ class AppointmentsControllerTest extends TestCase
         $consultingRoomIdNew = $consultingRoomsAvailables[array_rand($consultingRoomsAvailables)];
         $newCost = $appointmentBefore->cost + 2000;
 
-        $docNumsAvailables = array_diff(range(00000000, 44444444, 11111111), [$appointmentBefore->employee_person_doc_num]);
+        $docNumsAvailables = array_diff(array_map(function($num) { return str_repeat(strval($num), 8);}, range(0, 4)), [$appointmentBefore->employee_person_doc_num]);
         $docNumNew = $docNumsAvailables[array_rand($docNumsAvailables)];
         $data = [
             'employee_person_doc_type' => 'DNI',

@@ -26,9 +26,9 @@ class PeopleFixture extends TestFixture
                 'names' => $faker->name,
                 'last_name1' => $faker->lastName,
                 'last_name2' => $faker->lastName,
-                'birth' => FrozenDate::now(),
+                'birth' => FrozenDate::now()->format('Y-m-d'),
                 'nationality' => 'PERÚ',
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'gendre' => $faker->randomElement(['M', 'F']),
             ];
         }
@@ -40,9 +40,9 @@ class PeopleFixture extends TestFixture
                 'names' => $faker->name,
                 'last_name1' => $faker->lastName,
                 'last_name2' => $faker->lastName,
-                'birth' => FrozenDate::now(),
+                'birth' => FrozenDate::now()->format('Y-m-d'),
                 'nationality' => 'PERÚ',
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'gendre' => $faker->randomElement(['M', 'F']),
             ];
         }
@@ -53,9 +53,9 @@ class PeopleFixture extends TestFixture
             'names' => $faker->name,
             'last_name1' => $faker->lastName,
             'last_name2' => $faker->lastName,
-            'birth' => FrozenDate::now(),
+            'birth' => FrozenDate::now()->format('Y-m-d'),
             'nationality' => 'PERÚ',
-            'created' => FrozenDate::now(),
+            'created' => FrozenDate::now()->format('Y-m-d'),
             'gendre' => $faker->randomElement(['M', 'F']),
         ];
 
@@ -65,9 +65,9 @@ class PeopleFixture extends TestFixture
             'names' => $faker->name,
             'last_name1' => $faker->lastName,
             'last_name2' => $faker->lastName,
-            'birth' => FrozenDate::now(),
+            'birth' => FrozenDate::now()->format('Y-m-d'),
             'nationality' => 'PERÚ',
-            'created' => FrozenDate::now(),
+            'created' => FrozenDate::now()->format('Y-m-d'),
             'gendre' => $faker->randomElement(['M', 'F']),
         ];
 

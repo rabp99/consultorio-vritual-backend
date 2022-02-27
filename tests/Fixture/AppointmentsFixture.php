@@ -20,7 +20,7 @@ class AppointmentsFixture extends TestFixture
         $this->records = [];
 
         for ($i = 0; $i < 30; $i++) {
-            $appointment_date = $faker->dateTimeBetween(FrozenDate::now(), FrozenDate::now()->modify('+2 month'));
+            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->format('Y-m-d'), FrozenDate::now()->modify('+2 month')->format('Y-m-d'));
             $this->records[] = [
                 'patient_person_doc_type' => 'DNI',
                 'patient_person_doc_num' => $faker->randomElement(['55555555', '66666666', '77777777', '88888888', '99999999']),
@@ -35,7 +35,7 @@ class AppointmentsFixture extends TestFixture
         }
 
         for ($i = 0; $i < 30; $i++) {
-            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month'), FrozenDate::now());
+            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month')->format('Y-m-d'), FrozenDate::now()->format('Y-m-d'));
             $this->records[] = [
                 'patient_person_doc_type' => 'DNI',
                 'patient_person_doc_num' => $faker->randomElement(['55555555', '66666666', '77777777', '88888888', '99999999']),
@@ -50,7 +50,7 @@ class AppointmentsFixture extends TestFixture
         }
 
         for ($i = 0; $i < 30; $i++) {
-            $appointment_date = $faker->dateTimeBetween(FrozenDate::now(), FrozenDate::now()->modify('+2 month'));
+            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->format('Y-m-d'), FrozenDate::now()->modify('+2 month')->format('Y-m-d'));
             $this->records[] = [
                 'patient_person_doc_type' => 'DNI',
                 'patient_person_doc_num' => $faker->randomElement(['55555555', '66666666', '77777777', '88888888', '99999999']),
@@ -65,8 +65,8 @@ class AppointmentsFixture extends TestFixture
         }
 
         for ($i = 0; $i < 30; $i++) {
-            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-2 month'), FrozenDate::now()->modify('+1 month'));
-            $cancel_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month'), FrozenDate::now());
+            $appointment_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-2 month')->format('Y-m-d'), FrozenDate::now()->modify('+1 month')->format('Y-m-d'));
+            $cancel_date = $faker->dateTimeBetween(FrozenDate::now()->modify('-1 month')->format('Y-m-d'), FrozenDate::now()->format('Y-m-d'));
             $this->records[] = [
                 'patient_person_doc_type' => 'DNI',
                 'patient_person_doc_num' => $faker->randomElement(['55555555', '66666666', '77777777', '88888888', '99999999']),

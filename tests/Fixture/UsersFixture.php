@@ -32,7 +32,7 @@ class UsersFixture extends TestFixture
                 'role' => 'ADMINISTRADOR',
                 'employee_person_doc_type' => 'DNI',
                 'employee_person_doc_num' => '70801887',
-                'created' => FrozenDate::now(),
+                'created' => FrozenDate::now()->format('Y-m-d'),
                 'state' => 'ACTIVO',
             ],
         ];
