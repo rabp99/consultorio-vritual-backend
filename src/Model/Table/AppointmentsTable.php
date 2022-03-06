@@ -55,7 +55,7 @@ class AppointmentsTable extends Table
         $this->addBehavior('Timestamp');
         $this->addBehavior('Userstamp');
 
-        $this->hasOne('Ciits');
+        $this->hasOne('Citts');
         
         $this->belongsTo('ConsultingRooms')
             ->setForeignKey('consulting_room_id')

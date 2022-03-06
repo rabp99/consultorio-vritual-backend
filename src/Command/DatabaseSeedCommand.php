@@ -31,7 +31,11 @@ class DatabaseSeedCommand extends Command
         exec('bin\cake migrations seed --seed MedicinesSeed');
         exec('bin\cake migrations seed --seed RecipesSeed');
         exec('bin\cake migrations seed --seed CittsSeed');
-
+        exec('bin\cake migrations seed --seed ImagingExamsSeed');
+        exec('bin\cake migrations seed --seed LaboratoryExamsSeed');
+        exec('bin\cake migrations seed --seed AppointmentsImagingExamsSeed');
+        exec('bin\cake migrations seed --seed AppointmentsLaboratoryExamsSeed');
+        
         $io->out('¡Seed Completo!');
     }
 }

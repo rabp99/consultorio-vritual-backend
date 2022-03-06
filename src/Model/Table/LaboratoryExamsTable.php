@@ -42,8 +42,8 @@ class LaboratoryExamsTable extends Table
         parent::initialize($config);
 
         $this->setTable('laboratory_exams');
-        $this->setDisplayField('id');
-        $this->setPrimaryKey('description');
+        $this->setDisplayField('description');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 

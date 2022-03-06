@@ -78,7 +78,16 @@ class AppointmentsController extends AppController
     {
         $this->getRequest()->allowMethod('GET');
         $appointment = $this->Appointments->get($id, [
-            'contain' => ['Patients' => 'People', 'Employees' => 'People', 'ConsultingRooms', 'Diagnostics', 'Recipes'],
+            'contain' => [
+                'Patients' => 'People', 
+                'Employees' => 'People', 
+                'ConsultingRooms', 
+                'Diagnostics' => ['Diseases'], 
+                'Recipes' => ['Medicines'],
+                'LaboratoryExams',
+                'ImagingExams',
+                'Citts',
+            ],
         ]);
 
         $this->set(['appointment' => $appointment]);

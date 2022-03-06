@@ -27,7 +27,7 @@ class AppointmentsLaboratoryExamsSeed extends AbstractSeed
         for ($i = 0; $i < 24; $i++) {
             $data[] = [
                 'appointment_id' => $faker->numberBetween(31, 60),
-                'imaging_exam_id' => $faker->numberBetween(1, 23),
+                'laboratory_exam_id' => $faker->numberBetween(1, 23),
                 'created' => FrozenDate::now()->format('Y-m-d'),
             ];
         }
